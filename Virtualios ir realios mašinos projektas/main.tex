@@ -1,0 +1,37 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage[utf8x]{inputenc}
+\usepackage [T1]{fontenc}
+\usepackage{datetime}
+%\usepackage[T2A]{fontenc}
+\usepackage[hmargin={20mm,10mm},vmargin={20mm,15mm},bindingoffset=0mm]{geometry}
+\usepackage[colorlinks=true, linkcolor=blue, citecolor=blue, urlcolor=blue, unicode]{hyperref}
+
+
+\usepackage{docstyle}
+
+
+
+\begin{document}
+\begin{titlepage}
+	\centering
+	{\scshape\large VILNIAUS UNIVERSITETAS \\
+	MATEMATIKOS IR INFORMATIKOS FAKULTETAS \par}
+	\vspace{6cm}
+	{\huge\bfseries Virtualios ir realios mašinos projektas\par}
+	Matematinė informatika 3 kursas
+	\vspace{3cm}
+	\vfill
+	\flushright
+	Autoriai: \\Ignas Jatulis \\ Lukas Janulis
+	\vfill
+	\centering
+	{\the\year}
+\end{titlepage}	
+\tableofcontents
+\newpage
+\input{rm.tex}
+\input{vm.tex}
+\input{os.tex}
+
+\end{document}
+
