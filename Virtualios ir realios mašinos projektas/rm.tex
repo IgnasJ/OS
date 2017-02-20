@@ -36,6 +36,16 @@ Atmintis, skirta virtualių mašinų atmintims bei puslapių lentelėms saugoti.
   \item[Supervizorinė atmintis] \leavevmode \\
 Atmintis, skirta operacinės sistemos poreikiams, laikanti sisteminius procesus, kintamuosius, resursus ir t.t Realizuojama aukšto lygio programavimo kalba
 
+\item[Puslapiavimo mechanizmas] \leavevmode \\
+Sąryšis tarp virtualios atminties ir realios amtinties bus palaikomas per puslapiavimo mechanizmą. Virtualios mašinos puslapį(bloką) sudaro 16 žodžių.
+\\ Registre PTR bus saugomas einamosios puslapių lentelės ilgis bei adresas. Keturi PTR baitai a0, a1, a2, a3 bus paskirstyti taip:
+\begin{itemize}
+\item a0 - nenaudojamas(tuščias)
+\item a1 - puslapių lentelės ilgis - 1
+\item a2 - naudojamas kartu su a3 gauti puslapių lentelės adresą pagal: a2*10 + a3
+\item Dviženklis adresas [x1, x2]  virtualioje adresinėje erdvėje aparatūriškai advaizuojamas į realų adresą vartotojo atmintyje: 10*[10*(10*a2 + a3) +x1] + x2
+\end{itemize}
+
   \item[Duomenų perdavimo kanalai] \leavevmode \\
 Kanalai yra specialūs procesoriai, valdantys įėjimo, išėjimo ir išorinės atminties įrenginius, dirbantys lygiagrečiai su centriniu procesoriumi.
 \begin{itemize}
@@ -49,6 +59,7 @@ Visi kanalai centriniame procesoriuje turi atitinkamus 1b registrus CH1, CH2, CH
   \item[Įvedimo ir išvedimo įrenginiai] \leavevmode \\
 Įvedimo įrenginys - flash atmintinė, išvedimo įrenginys - spausdintuvas. Abu turi 16 žodžių dydžio buferius apsikeisti duomenimis. Užpildžius buferį, jis yra siunčiamas
 į išvedimo įrenginį arba į kanalą priklausomai nuo situacijos.
+
 
 
 \end{description}
