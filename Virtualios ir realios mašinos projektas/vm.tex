@@ -12,7 +12,7 @@ Virtuali mašina – tai virtuali realios mašinos kopija. Virtuali reiškia net
 
 Virtualios mašinos (VM) atmintis sudaryta iš 16 žodžių po 4 baitus. 16 žodžių sudarys bloką. Kiekvienai VM skiriama po 16 blokų. Tuose šešiolikoje blokų turi tilpti programa.
 Pirmuose keturiuose blokuose bus saugomos programos komandos, o likusiuose dvylika – programos darbui reikalingi duomenys.
-Ryšiai tarp realaus ir virtualaus adreso bus nusakomi per puslapiavimo mechanizmą. Puslapiavimo lentelė bus saugoma paskutiniuose penkiuose atminties blokuose.
+Ryšiai tarp realaus ir virtualaus adrZeso bus nusakomi per puslapiavimo mechanizmą. Puslapiavimo lentelė bus saugoma paskutiniuose penkiuose atminties blokuose.
 
 
 \includegraphics{VMatmintis.PNG}
@@ -37,25 +37,25 @@ Galimos reikšmės:
 \begin{enumerate}
 \item Aritmetinės komandos: \leavevmode 
 \begin{itemize}
-\item ADD – sudeda DR ir DP, kur DR ir DP – įvedami skaičiai arba komandos, įrašoma į DT
-\item SUB – iš DR atimama DP, įrašoma į DT
-\item MUL – sudaugina DR ir DP, įrašoma į DT
-\item DIV – padalina DR iš DP, įrašoma į DT
-\item PD x1x2 – išvedimo komanda
+\item ADD – sudeda R1 ir R2, kur R1 ir R2 – įvedami skaičiai arba komandos, įrašoma į D3
+\item SUB – iš R1 atimama R2, įrašoma į D3
+\item MUL – sudaugina R1 ir R2, įrašoma į D3
+\item DIV – padalina R1 iš R2, įrašoma į D3
 \end{itemize}
 \item Palyginimo komandos:
 \begin{itemize}
-\item CMP – ši komanda palygina registre DR ir DP išsaugoma į SF reikšmę: 0 – jei DR = DP,  1 – jei DR > DP, 2 –  DR < DP.
+\item CMP – ši komanda palygina registre R1 ir R2 išsaugoma į SF reikšmę: 0 – jei R1 = R2,  1 – jei R1 > R2, 2 –  R1 < R2.
 \item JMP x1x2 - ši komanda pagal SF reikšmę „šoka“ į atminti su adresu 
 \end{itemize}
 \item  Darbo su duomenimis komandos:
 \begin{itemize}
-\item LDx1x2 – į registrą DR užkrauna skaičių nurodytu adresu 16 * x1 + x2 bei formuoja DF = 0 požymį, reiškiantį, kad registre DR – simbolinė informacija. (x1 ir x2 iš šešioliktainės paversti į dešimtainę). 
-\item LWx1x2 – į registrą DR užkrauna žodį nurodytu adresu 16 * x1 + x2 bei formuoja DF = 1 požymį, reškiantį, kad registre DR – sveikas skaičius su ženklu.
+\item LDx1x2 – į registrą R1 užkrauna skaičių nurodytu adresu 16 * x1 + x2 bei formuoja SF = 4 požymį, reiškiantį, kad registre R1 – simbolinė informacija.
+\item LWx1x2 – į registrą R1 užkrauna žodį nurodytu adresu 16 * x1 + x2 bei formuoja SF = 3 požymį, reškiantį, kad registre R1 – sveikas skaičius su ženklu.
 \item LSx1x2 – į atmintį įkelia žodį ar skaičių.
-\item LCx1x2 – iš realios atminties pasiima žodį ar skaičių ir įkelia į DR.
-\item LEx1x2 – į registrą DP užkrauna skaičių, adresu 16 * x1 + x2.
-\item LK x1x2 – nuskaito registrą DP
+\item LCx1x2 – iš realios atminties pasiima žodį ar skaičių ir įkelia į R1.
+\item LEx1x2 – į registrą R2 užkrauna skaičių, adresu 16 * x1 + x2.
+\item PD x1x2 – išvedimo komanda
+\item LK x1x2 – nuskaito registrą R2
 \end{itemize}
 \item Valdymo komandos:
 \begin{itemize}
