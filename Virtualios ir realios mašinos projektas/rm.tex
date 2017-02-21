@@ -13,6 +13,7 @@ Procesoriaus registrai:
 \begin{itemize}
   \item R1 - 4b bendro naudojimo
   \item R2 - 4b bendro naudojimo
+  \item R3 - 4b bendro naudojimo
   \item IC - 2b komandų skaitliukas
   \item PTR - 4b puslapių lentelės registras skirtas puslapiavimui
   \item CH1, CH2, CH3 - 1b atitinkamų kanalų registrai. 0 - kanalas laisvas, 1 - kanalas užimtas
@@ -28,6 +29,13 @@ Procesoriaus registrai:
 		\\3 - HALT komandos pertraukimas
   \item TI - 1b taimerio pertraukimo registras
   \item IOI - 1b įvedimo/išvedimo operacijos pabaigos pertraukimas. 1 - pirmas kanalas, 2 - antras kanalas, 4 - trečias kanalas
+  \item C - 1b loginis registras. Pagal iš atminties nuskaityto žodžio duomenų formatą, gali įgyti reikšmes: \leavevmode
+		\\ 0 - skaičiai lygūs
+		\\ 1 - pirmas skaičius didesnis
+		\\ 2 - pirmas skaičius maženis
+		\\ 3 - R1 - skaičius
+		\\ 4 - R2 - žodis
+
   \item MODE - 1b rėžimo registras. 0 - dirbama vartotojo rėžimu, 1 - dirbama supervizoriaus rėžimu
 \end{itemize}
 
