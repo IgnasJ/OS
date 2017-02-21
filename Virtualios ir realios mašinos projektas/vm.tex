@@ -37,20 +37,19 @@ Galimos reikšmės:
 \begin{enumerate}
 \item Aritmetinės komandos: \leavevmode 
 \begin{itemize}
-\item ADD – sudeda R1 ir R2, kur R1 ir R2 – įvedami skaičiai arba komandos, įrašoma į D3
-\item SUB – iš R1 atimama R2, įrašoma į D3
-\item MUL – sudaugina R1 ir R2, įrašoma į D3
-\item DIV – padalina R1 iš R2, įrašoma į D3
+\item ADD – sudeda R1 ir R2, kur R1 ir R2 – įvedami skaičiai arba komandos, įrašoma į R3
+\item SUB – iš R1 atimama R2, įrašoma į R3
+\item MUL – sudaugina R1 ir R2, įrašoma į R3
+\item DIV – padalina R1 iš R2, įrašoma į R3
 \end{itemize}
 \item Palyginimo komandos:
 \begin{itemize}
-\item CMP – ši komanda palygina registre R1 ir R2 išsaugoma į SF reikšmę: 0 – jei R1 = R2,  1 – jei R1 > R2, 2 –  R1 < R2.
-\item JMP x1x2 - ši komanda pagal SF reikšmę „šoka“ į atminti su adresu 
+\item CMP – ši komanda palygina registre R1 ir R2 išsaugoma į C reikšmę: 0 – jei R1 = R2,  1 – jei R1 > R2, 2 –  R1 < R2.
+\item JMP x1x2 - ši komanda pagal C reikšmę „šoka“ į atminti su adresu 
 \end{itemize}
 \item  Darbo su duomenimis komandos:
 \begin{itemize}
-\item LDx1x2 – į registrą R1 užkrauna skaičių nurodytu adresu 16 * x1 + x2 bei formuoja SF = 4 požymį, reiškiantį, kad registre R1 – simbolinė informacija.
-\item LWx1x2 – į registrą R1 užkrauna žodį nurodytu adresu 16 * x1 + x2 bei formuoja SF = 3 požymį, reškiantį, kad registre R1 – sveikas skaičius su ženklu.
+\item LWx1x2 – į registrą R1 užkrauna žodį nurodytu adresu 16 * x1 + x2.
 \item LSx1x2 – į atmintį įkelia žodį ar skaičių.
 \item LCx1x2 – iš realios atminties pasiima žodį ar skaičių ir įkelia į R1.
 \item LEx1x2 – į registrą R2 užkrauna skaičių, adresu 16 * x1 + x2.
@@ -69,7 +68,7 @@ Galimos reikšmės:
 \subsection{Virtualios mašinos bendravimo su įvedimo/išvedimo įrenginiais
 mechanizmo aprašymas}
 
-
+VM duomenis skaito iš ``flash'' atmintines (arba hdd), o rezultatą išveda į spausdintuvą. Įvedimą/išvedimą kontroliuoja kanalų įrenginys.
 
 \subsection{Virtualios mašinos interpretuojamojo vykdomojo failo išeities 
 teksto formatas}

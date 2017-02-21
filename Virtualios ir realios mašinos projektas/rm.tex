@@ -7,7 +7,7 @@
 Procesorius gali dirbti dviem rėžimais: vartotojo ir supervizoriaus. Registras MODE nusako procesoriaus rėžimą(0 - vartotojo, 1 - supervizoriaus)
 \begin{itemize}
   \item Vartotojo rėžimas - jame yra vykdoma paduota programa
-  \item Supervizoriaus rėžimeas - jame komandos iš supervizorinės atminties yra betarpiškai apdorojamos aukšto lygio kalbos procesoriaus
+  \item Supervizoriaus rėžimas - jame komandos iš supervizorinės atminties yra betarpiškai apdorojamos aukšto lygio kalbos procesoriaus
 \end{itemize}
 Procesoriaus registrai:
 \begin{itemize}
@@ -33,8 +33,6 @@ Procesoriaus registrai:
 		\\ 0 - skaičiai lygūs
 		\\ 1 - pirmas skaičius didesnis
 		\\ 2 - pirmas skaičius maženis
-		\\ 3 - R1 - skaičius
-		\\ 4 - R2 - žodis
 
   \item MODE - 1b rėžimo registras. 0 - dirbama vartotojo rėžimu, 1 - dirbama supervizoriaus rėžimu
 \end{itemize}
@@ -42,7 +40,7 @@ Procesoriaus registrai:
   \item[Naudotojo atmintis] \leavevmode \\
 Atmintis, skirta virtualių mašinų atmintims bei puslapių lentelėms saugoti. Ji turi 256 žodžius, nuo 00 iki FF. Žodžio ilgis - 4b
   \item[Supervizorinė atmintis] \leavevmode \\
-Atmintis, skirta operacinės sistemos poreikiams, laikanti sisteminius procesus, kintamuosius, resursus ir t.t Realizuojama aukšto lygio programavimo kalba
+Atmintis, skirta operacinės sistemos poreikiams, laikanti sisteminius procesus, kintamuosius, resursus ir t.t. Realizuojama aukšto lygio programavimo kalba.
 
 \item[Puslapiavimo mechanizmas] \leavevmode \\
 Sąryšis tarp virtualios atminties ir realios amtinties bus palaikomas per puslapiavimo mechanizmą. Virtualios mašinos puslapį(bloką) sudaro 16 žodžių.
@@ -68,6 +66,17 @@ Visi kanalai centriniame procesoriuje turi atitinkamus 1b registrus CH1, CH2, CH
 Įvedimo įrenginys - flash atmintinė, išvedimo įrenginys - spausdintuvas. Abu turi 16 žodžių dydžio buferius apsikeisti duomenimis. Užpildžius buferį, jis yra siunčiamas
 į išvedimo įrenginį arba į kanalą priklausomai nuo situacijos.
 
+  \item[Semaforas] \leavevmode \\
+Semaforas S tai sveikas neneigiamas skaičius, su kuriuo atliekamos operacijos P(S) ir V(S), kur P ir V nauji primityvai. Operacijos pasižymi savybėmis:
+\begin{itemize}
+\item P(S), V(S) – nedalomos operacijos, t.y. jų valdymo negalima pertraukti ir jų vykdymo metu negalima kreiptis į semaforą S;
+\item V(S):     S:S+1; (didinama semaforo reikšmė)
+\item P(S):      S:S-1; (sumažinama jei S>0)
+\item Jei S=0, tai procesas P, kuris vykdo operaciją P(S), laukia, kol sumažinimas vienetu bus galimas. Šiuo atvėju P(S) yra pertraukiamas
+\item Jei keletas procesų vienu metu iškviečia V(S) ir/ar P(S) su vienu semaforu, tai užklausimai vykdomi nuosekliai, kokia nors iš anksto nežinoma tvarka.
+\item Jei keletas procesų laukia operacijos P(S) įvykdymo, S – ta pats, tai reikšmei tapus teigiamai (kai kažkuris procesas įvykdė operaciją V(S)), kažkuris iš laukiančių procesų bus pradėtas vykdyti.
+Pagal prasmę operacija P atitinka perėjimo išškvietimą, o V – kito proceso aktyvaciją.
+\end{itemize}
 
 
 \end{description}
