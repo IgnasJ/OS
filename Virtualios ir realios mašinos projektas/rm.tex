@@ -13,7 +13,6 @@ Procesoriaus registrai:
 \begin{itemize}
   \item R1 - 4b bendro naudojimo
   \item R2 - 4b bendro naudojimo
-  \item R3 - 4b bendro naudojimo
   \item IC - 2b komandų skaitliukas
   \item PTR - 4b puslapių lentelės registras skirtas puslapiavimui
   \item CH1, CH2, CH3 - 1b atitinkamų kanalų registrai. 0 - kanalas laisvas, 1 - kanalas užimtas
@@ -24,11 +23,11 @@ Procesoriaus registrai:
 		\\4 - dalyba iš 0
 		\\5 - Aritmetinės operacijos klaida
   \item SI - 1b supervizorinių pertraukimų registras\leavevmode
-		\\1 - GD(GetData) komandos pertraukimas
-		\\2 - PD(PrintData) komandos pertraukimas
+		\\1 - Nuskaitymo komandos pertraukimas
+		\\2 - Išvedimo komandos pertraukimas
 		\\3 - HALT komandos pertraukimas
   \item TI - 1b taimerio pertraukimo registras
-  \item IOI - 1b įvedimo/išvedimo operacijos pabaigos pertraukimas. 1 - pirmas kanalas, 2 - antras kanalas, 4 - trečias kanalas
+  \item IOI - 1b įvedimo/išvedimo operacijos pabaigos pertraukimas. 1 - pirmas kanalas, 2 - antras kanalas, 3 - trečias kanalas
   \item C - 1b loginis registras. Pagal iš atminties nuskaityto žodžio duomenų formatą, gali įgyti reikšmes: \leavevmode
 		\\ 0 - skaičiai lygūs
 		\\ 1 - pirmas skaičius didesnis
@@ -61,7 +60,6 @@ Kanalai yra specialūs procesoriai, valdantys įėjimo, išėjimo ir išorinės 
 \end{itemize}
 Visi kanalai centriniame procesoriuje turi atitinkamus 1b registrus CH1, CH2, CH3. 0 - kanalas laisvas, 1 - kanalas užimtas.
 
-
   \item[Įvedimo ir išvedimo įrenginiai] \leavevmode \\
 Įvedimo įrenginys - flash atmintinė, išvedimo įrenginys - spausdintuvas. Abu turi 16 žodžių dydžio buferius apsikeisti duomenimis. Užpildžius buferį, jis yra siunčiamas
 į išvedimo įrenginį arba į kanalą priklausomai nuo situacijos.
@@ -78,8 +76,9 @@ Semaforas S tai sveikas neneigiamas skaičius, su kuriuo atliekamos operacijos P
 Pagal prasmę operacija P atitinka perėjimo išškvietimą, o V – kito proceso aktyvaciją.
 \end{itemize}
 
-
 \end{description}
 
 \subsection{Realios mašinos techninės įrangos komponentų išsidėstymo vienas kito atžvilgiu ir tarpusavio sąveikos schema}
 \includegraphics{RM.PNG}
+
+\newpage
