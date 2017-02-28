@@ -90,7 +90,7 @@ Bendra programos schema:\\
 \subsection{Modeliuojamos virtualios mašinos loginių komponentų sąryšio su 
 realios mašinos techninės įrangos komponentais aprašymas}
 
-Sistemai aptikus pertraukimą, nutraukiamas vartotojo programos vykdymas, o valdymas perduodamas pertraukimo apdorojimo programai. Pastaroji programa, atlikusi darbą, valdymą grąžina operacinei sistemai pertraukimo vietoje.  Ką toliau daryti – sprendžia OS. Kiekvieno pertraukimą sukeliančio įvykio metu bus nustatomi atitinkami pertraukimų registrai: CH1, CH2, CH3, SI, PI, TIME priskiriamos atitinkamos reikšmės. 
+Sistemai aptikus pertraukimą, nutraukiamas vartotojo programos vykdymas, o valdymas perduodamas pertraukimo apdorojimo programai. Pastaroji programa, atlikusi darbą, valdymą grąžina operacinei sistemai pertraukimo vietoje.  Ką toliau daryti – sprendžia OS. Kiekvieno pertraukimą sukeliančio įvykio metu bus nustatomi atitinkami pertraukimų registrai: CH1, CH2, CH3, SI, PI, TI priskiriamos atitinkamos reikšmės. 
 Į pertraukimą reaguojama tik vartotojo režime, supervizoriaus režime pertraukimai uždrausti. Vykdant programas vartotojo režimu virtualioje mašinoje, vykdomas komandos interpretavimo ciklas ir po to duodama supervizorinė komanda Test(x), kuri  nustato ar neįvyko pertraukimas. 
 Pertraukimui įvykus, išsaugoma virtualios mašinos būsena, procesorius perjungiamas į supervizoriaus režimą ir valdymas atiduodamas atitinkamo pertraukimo apdorojimo programai.
 Pertraukimo programos nustato pertraukimą sukėlusią priežastį ir išvalo pertraukimo registrą, kviesdama komanda Test su atitinkamu parametru. Po  to reaguojant į pertraukimą.
