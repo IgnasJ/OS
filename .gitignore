@@ -1,3 +1,4 @@
+#TeX files
 *.pdf
 *.aux
 *.log
@@ -6,3 +7,8 @@
 *.o
 *.gz
 *.toc
+
+#IntelliJ files
+.idea
+*.iml
+out/
