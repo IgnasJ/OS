@@ -19,20 +19,20 @@ Procesoriaus registrai:
   \item PI - 1b programinių pertraukimų registras\leavevmode
 		\\1 - pažeista atminties apsauga
 		\\2 - neatpažintas operacijos kodas
-           	\\3 - taimerio registras pasiekė 0
-		\\4 - dalyba iš 0
-		\\5 - Aritmetinės operacijos klaida
+		\\3 - dalyba iš 0
+		\\4 - Aritmetinės operacijos klaida
   \item SI - 1b supervizorinių pertraukimų registras\leavevmode
 		\\1 - Nuskaitymo komandos pertraukimas
 		\\2 - Išvedimo komandos pertraukimas
 		\\3 - HALT komandos pertraukimas
   \item TI - 1b taimerio pertraukimo registras
   \item IOI - 1b įvedimo/išvedimo operacijos pabaigos pertraukimas. 1 - pirmas kanalas, 2 - antras kanalas, 3 - trečias kanalas
-  \item C - 1b loginis registras. Pagal iš atminties nuskaityto žodžio duomenų formatą, gali įgyti reikšmes: \leavevmode
-		\\ 0 - skaičiai lygūs
-		\\ 1 - pirmas skaičius didesnis
-		\\ 2 - pirmas skaičius maženis
-
+  \item C - 1b požymių registras, formuojamas komandos CMP bei aritmetinių ir loginių komandų: \leavevmode
+	\begin{itemize}
+		\item Pirmas bitas: zero flag (ZF): ZF = 1, jei atliekant CMP reikšmių skirtumas yra 0. Priešingu atveju ZF = 0
+		\item Antras bitas: sign flag (SF): SF = 1, jeigu atlikus aritmetinę operaciją ženklo bitas yra 1. Kitu atveju SF = 0		
+		\item Trečias bitas: overflow flag(OF): OF = 0, jeigu dviejų reikšmių ženklo bitai yra vienodi, o jų skirtumo ženklo bitas skiriasi. Priešingu atveju OF = 1	
+	\end{itemize}
   \item MODE - 1b rėžimo registras. 0 - dirbama vartotojo rėžimu, 1 - dirbama supervizoriaus rėžimu
 \end{itemize}
 
