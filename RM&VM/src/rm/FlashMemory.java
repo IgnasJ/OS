@@ -5,9 +5,6 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
-/**
- * Created by Ignas on 2017-03-02.
- */
 public class FlashMemory {
 
     public FlashMemory() {

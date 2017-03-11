@@ -1,16 +1,6 @@
 package rm;
 
-import registers.Register;
-
-/**
- * Created by Ignas on 2017-02-28.
- */
 public class RM {
-
-    /*private Register R1 = new Register("R1", 4);
-    private Register R2 = new Register("R2", 4);
-    private Register PTR = new Register("PTR", 4);
-    private Register IC = new Register("IC", 2); */
 
     private int R1;
     private int R2;
@@ -32,36 +22,41 @@ public class RM {
     }
 
 
-    public void setZF(){
+    public void setZF() {
         C |= (1 << 6);
     }
-    public void clearZF(){
+
+    public void clearZF() {
         C &= ~(1 << 6);
     }
-    public int getZF(){
+
+    public int getZF() {
         return (C >> 6) & 1;
     }
 
-    public void setSF(){
+    public void setSF() {
         C |= (1 << 5);
     }
-    public void clearSF(){
+
+    public void clearSF() {
         C &= ~(1 << 5);
     }
-    public int getSF(){
+
+    public int getSF() {
         return (C >> 5) & 1;
     }
 
-    public void setOF(){
+    public void setOF() {
         C |= (1 << 4);
     }
-    public void clearOF(){
+
+    public void clearOF() {
         C &= ~(1 << 4);
     }
-    public int getOF(){
+
+    public int getOF() {
         return (C >> 4) & 1;
     }
-
 
 
     public int getR1() {
@@ -159,6 +154,5 @@ public class RM {
     public void setMODE(byte MODE) {
         this.MODE = MODE;
     }
-
 
 }
