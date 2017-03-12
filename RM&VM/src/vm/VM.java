@@ -1,5 +1,7 @@
 package vm;
 
+import rm.Memory;
+
 public class VM {
 
     private int R1;
@@ -7,7 +9,10 @@ public class VM {
     private byte C;
     private short IC;
 
-    public VM() {
+    private Memory memory;
+
+    public VM(Memory memory) {
+        this.memory = memory;
     }
 
     public void resolveCommand(String line) throws Exception {
@@ -25,27 +30,27 @@ public class VM {
         } else if (line.substring(0, 3).equals("CMP")) {
             CMP();
         } else if (line.substring(0, 2).equals("LW")) {
-            LW();
+            LW(line.substring(3, 4));
         } else if (line.substring(0, 2).equals("LE")) {
-            LE();
+            LE(line.substring(3, 4));
         } else if (line.substring(0, 2).equals("LS")) {
-            LS();
+            LS(line.substring(3, 4));
         } else if (line.substring(0, 2).equals("LX")) {
-            LX();
+            LX(line.substring(3, 4));
         } else if (line.substring(0, 2).equals("LY")) {
-            LY();
+            LY(line.substring(3, 4));
         } else if (line.substring(0, 2).equals("LL")) {
-            LL();
+            LL(line.substring(3, 4));
         } else if (line.substring(0, 2).equals("LR")) {
-            LR();
+            LR(line.substring(3, 4));
         } else if (line.substring(0, 2).equals("LD")) {
-            LD();
+            LD(line.substring(3, 4));
         } else if (line.substring(0, 2).equals("JM")) {
-            JM();
+            JM(line.substring(3, 4));
         } else if (line.substring(0, 2).equals("JE")) {
-            JE();
+            JE(line.substring(3, 4));
         } else if (line.substring(0, 2).equals("JG")) {
-            JG();
+            JG(line.substring(3, 4));
         } else if (line.substring(0, 2).equals("JL")) {
             JL(line.substring(3, 4));
         } else if (line.substring(0, 2).equals("IC")) {
@@ -70,6 +75,7 @@ public class VM {
         if (((R1 >> 6) & 1) == 1) {
             setSF();
         }
+        ++IC;
     }
 
     // Iš R1 atimama R2, įrašoma į R1. Jeigu rezultatas netelpa, OF = 1. Jeigu reikšmės ženklo bitas yra 1, SF = 1.
@@ -83,6 +89,7 @@ public class VM {
         if (((R1 >> 6) & 1) == 1) {
             setSF();
         }
+        ++IC;
     }
 
     // Sudaugina R1 ir R2, įrašoma į R1.Jeigu rezultatas netelpa, OF = 1.Jeigu reikšmės ženklo bitas yra 1, SF = 1.
@@ -96,6 +103,7 @@ public class VM {
         if (((R1 >> 6) & 1) == 1) {
             setSF();
         }
+        ++IC;
     }
 
     // Padalina R1 iš R2, įrašoma į R1. Jeigu reikšmės ženklo bitas yra 1, SF = 1.
@@ -104,6 +112,7 @@ public class VM {
         if (((R1 >> 6) & 1) == 1) {
             setSF();
         }
+        ++IC;
     }
 
     //Ši komanda palygina registre R1 ir R2 ęsančias reikšmes. Jeigu reikšmės lygios, ZF = 1, priešingu atveju ZF = 0.
@@ -113,66 +122,70 @@ public class VM {
         } else {
             clearZF();
         }
+        ++IC;
     }
 
     //LWx1x2 - į registrą R1 užkrauna žodį nurodytu adresu 16 * x1 + x2.
-    public void LW() {
+    public void LW(String address) {
 
-
+        //R2 = memory.get(Integer.parseInt(address, 16));
+        ++IC;
     }
 
     //LEx1x2 - į registrą R2 užkrauna skaičių, adresu 16 * x1 + x2.
-    public void LE() {
-
+    public void LE(String address) {
+        ++IC;
     }
 
     //LSx1x2 - į atmintį adresu 16 * x1 + x2 rašo žodį ar skaičių.
-    public void LS() {
-
+    public void LS(String address) {
+        ++IC;
     }
 
     //LXx1x2 - į R1 užkrauna bendrosios atminties srities adreso 16*x1 + x2 reikšmę.
-    public void LX() {
-
+    public void LX(String address) {
+        ++IC;
     }
 
     //LYx1x2 - į R2 užkrauna bendrosios atminties srities adreso 16*x1 + x2 reikšmę.
-    public void LY() {
-
+    public void LY(String address) {
+        ++IC;
     }
 
     //LLx1x2 - į bendrosios atminties sritį adresu 16 * x1 + x2 rašo žodį ar skaičių.
-    public void LL() {
-
+    public void LL(String address) {
+        ++IC;
     }
 
     //LRx1x2 - nuskaito registrą R1
-    public void LR() {
-
+    public void LR(String address) {
+        ++IC;
     }
 
     //LDx1x2 - nuskaito registrą R2
-    public void LD() {
-
+    public void LD(String address) {
+        ++IC;
     }
 
     //JMx1x2 - besąlyginio valdymo perdavimo komanda. Ji reiškia, kad valdymas turi būti perduotas kodo segmento žodžiui, nurodytam adresu 16 * x1 + x2
-    public void JM() {
-
+    public void JM(String address) {
+        ++IC;
     }
 
     //JEx1x2 - valdymas turi būti perduotas kodo segmento žodžiui, nurodytam adresu 16* x1 + x2 jeigu ZF = 1
-    public void JE() {
+    public void JE(String address) {
         if (getZF() == 1){
 
         }
+        ++IC;
     }
 
     //JGx1x2 - valdymas turi būti perduotas kodo segmento žodžiui, nurodytam adresu 16* x1 + x2 jeigu ZF = 0 IR SF = OF
-    public void JG() {
+    public void JG(String address) {
         if(getZF() == 0 && getSF() == getOF()) {
 
         }
+        ++IC;
     }
 
     //JLx1x2 - valdymas turi būti perduotas kodo segmento žodžiui, nurodytam adresu 16* x1 + x2 jeigu SF != OF
@@ -180,7 +193,7 @@ public class VM {
         if (!(getSF() == getOF())) {
             Integer.parseInt(address, 16);
         }
-
+        ++IC;
     }
 
     /// /IC - komandos skaitliukas. IC = 16 * x1 + x2;

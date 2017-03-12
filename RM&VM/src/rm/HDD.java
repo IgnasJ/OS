@@ -4,9 +4,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 
-/**
- * Created by Ignas on 2017-03-02.
- */
 public class HDD {
 
     private final int SECTORS = 100;
@@ -16,7 +13,7 @@ public class HDD {
     private RandomAccessFile file;
 
     public HDD() throws FileNotFoundException {
-        file = new RandomAccessFile("C:\\GitHub\\OS proj\\OS\\RM&VM\\src\\HDD", "rw");
+        file = new RandomAccessFile("HDD", "rw");
         try {
             for (int i = 0; i < 100; ++i) {
                 file.seek(i * WORDS_PER_SECTOR * 2);

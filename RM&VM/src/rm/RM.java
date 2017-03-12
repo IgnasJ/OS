@@ -18,6 +18,8 @@ public class RM {
     //First bit - ZF, 2nd - SF, 3rd - OF
     private byte C;
 
+    private Memory memory;
+
     public RM() {
     }
 
@@ -154,4 +156,11 @@ public class RM {
         this.MODE = MODE;
     }
 
+    public Memory getMemory() {
+        return memory;
+    }
+
+    public void setMemory(Memory memory) {
+        this.memory = memory;
+    }
 }
