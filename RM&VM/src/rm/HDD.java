@@ -61,5 +61,4 @@ public class HDD {
         }
         return new String(read(sector)).equals(EMPTY_SECTOR);
     }
-
 }

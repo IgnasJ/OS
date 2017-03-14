@@ -12,20 +12,20 @@ public class Main {
 
         FlashMemory fm = new FlashMemory();
 
-        fm.readToHDD("test.txt");
+        //fm.readToHDD("test.txt");
 
         RM rm = new RM();
-        VM vm = new VM();
+        VM vm = new VM(rm.getMemory());
         HDD hdd = new HDD();
+
+        FlashMemory fm = new FlashMemory(hdd);
+        fm.readToHDD("test.txt");
+
         try {
             vm.resolveCommand("ADD");
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        //uzkrauti programa
-        //debug'as
-
         GUI gui = new GUI(/*cia gal paduota kazkuria masina?*/);
 
     }
