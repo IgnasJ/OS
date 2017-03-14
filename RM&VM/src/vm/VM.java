@@ -18,7 +18,7 @@ public class VM {
 
     public void resolveCommand(String line) throws Exception {
         if (line.equals("HALT")) {
-            HALT();
+            RM.HALT();
         } else if (line.substring(0, 3).equals("ADD")) {
             ADD();
         } else if (line.substring(0, 3).equals("SUB")) {
@@ -55,11 +55,11 @@ public class VM {
             JL(line.substring(3, 4));
         } else if (line.substring(0, 2).equals("IC")) {
             IC(line.substring(3, 4));
-        } else if (line.substring(0, 2).equals("PD")) {
-            PD();
+        }/* else if (line.substring(0, 2).equals("PD")) {
+            RM.PD();
         } else if (line.substring(0, 2).equals("GD")) {
-            GD(line.substring(3, 4));
-        } else {
+            RM.GD(line.substring(3, 4));
+        } */else {
             throw new Exception("PAKEIST I TINKAMA. NEATPAZINTA KOMANDA");
         }
     }
@@ -205,7 +205,7 @@ public class VM {
         IC = Short.parseShort(address, 16);
     }
 
-    //HALT - programos sustojimo taško komanda, t.y. programos valdymo pabaiga.
+   /* //HALT - programos sustojimo taško komanda, t.y. programos valdymo pabaiga.
     public void HALT() throws Exception {
         RM.setSI((byte) 3);
         //throw new Exception("PROGRAMOS PABAIGA");
@@ -224,7 +224,7 @@ public class VM {
         RM.setSI((byte) 2);
         RM.writeToHDD(Integer.parseInt(address, 16));
         RM.setSI((byte)0);
-    }
+    } */
 
     public void setZF() {
         C |= (1 << 6);
