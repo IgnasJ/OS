@@ -10,13 +10,13 @@ public class Main {
 
     public static void main(String[] args) throws FileNotFoundException {
 
-        FlashMemory fm = new FlashMemory();
-
-        //fm.readToHDD("test.txt");
-
         RM rm = new RM();
         VM vm = new VM(rm.getMemory());
         HDD hdd = new HDD();
+
+        FlashMemory fm = new FlashMemory(hdd);
+        fm.readToHDD("test.txt");
+
         try {
             vm.resolveCommand("ADD");
         } catch (Exception e) {
