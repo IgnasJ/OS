@@ -21,14 +21,11 @@ public class RM {
 
     //realioj masinoj susimapinti
 
-    private static Memory memory = new Memory();
-    private static SupervisorMemory sMemory = new SupervisorMemory();
+    public static Memory memory = new Memory();
+    public static SupervisorMemory sMemory = new SupervisorMemory();
 
     public RM() {
-        readFromUSB();
-        readFromHDD();
     }
-
     /*
         getCommand(int IC){
             memory[nuo_to_bloko_kuris skirtas programos kodui]
@@ -184,8 +181,8 @@ public class RM {
     }
 
 
-    public static void writeToHDD(int address) {
-        if (getSI() == 2) {
+    /*public static void writeToHDD(int address) {
+        if (getSI() == 2 ){
             CH3 = 1;
             //paimt is atminties address
             //ir irasyt i hdd
@@ -194,24 +191,55 @@ public class RM {
     }
 
     public static void readFromHDD() {
-        if (getSI() == 1) {
+        if (getSI() == 1 ){
             CH3 = 1;
             //
             CH3 = 0;
         }
-    }
+    } */
 
     //reads from flash memory to HDD
-    public static void readFromUSB() {
+    public static void readFromUSB(){
         CH1 = 1;
         FlashMemory.readToHDD("test.txt");
         CH1 = 0;
     }
 
-    public static void writeToPrinter(Object o) {
+    public static void writeToPrinter(Object o){
         CH2 = 1;
         Printer.print(o);
         CH2 = 0;
+    }
+
+    //HALT - programos sustojimo taško komanda, t.y. programos valdymo pabaiga.
+    public static void HALT() throws Exception {
+        RM.setSI((byte) 3);
+        //throw new Exception("PROGRAMOS PABAIGA");
+        RM.setSI((byte)0);
+    }
+
+    //PDx - SI tampa 1 ir valdymas perduodamas OS, duomenų kopijavimui iš kietojo disko į supervizorinės atminties vietą x.
+    public static void PD(String address) {
+        RM.setSI((byte) 1);
+        CH3 = 1;
+
+        int block = address.charAt(0) - '0';
+        for(int i = 0; i < HDD.usedSectors.size(); ++i){
+            sMemory.writeBlock(HDD.read(HDD.usedSectors.get(i)), block);
+            block++;
+        }
+        CH3 = 0;
+        RM.setSI((byte)0);
+    }
+
+    //GDx - SI tampa 2 ir valdymas perduodamas OS, duomenų kopijavimui į kietąjį diską iš supervizorinės atminties vietos x.
+    public static void GD(String address) {
+        RM.setSI((byte) 2);
+        CH3 = 1;
+        //paimt is atminties address
+        //ir irasyt i hdd
+        CH3 = 0;
+        RM.setSI((byte)0);
     }
 
 }

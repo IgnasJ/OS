@@ -11,7 +11,9 @@ public class Main {
         HDD hdd = new HDD();
         RM rm = new RM();
         VM vm = new VM();
-
+        RM.readFromUSB();
+        RM.PD("0");
+        RM.sMemory.display();
 
         GUI gui = new GUI(/*cia gal paduota kazkuria masina?*/);
     }

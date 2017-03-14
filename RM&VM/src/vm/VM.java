@@ -16,7 +16,7 @@ public class VM {
 
     public void resolveCommand(String line) throws Exception {
         if (line.equals("HALT")) {
-            HALT();
+            RM.HALT();
         } else if (line.substring(0, 3).equals("ADD")) {
             ADD();
         } else if (line.substring(0, 3).equals("SUB")) {
@@ -204,7 +204,7 @@ public class VM {
         IC = Short.parseShort(address, 16);
     }
 
-    //HALT - programos sustojimo taško komanda, t.y. programos valdymo pabaiga.
+    /* //HALT - programos sustojimo taško komanda, t.y. programos valdymo pabaiga.
     public void HALT() throws Exception {
         RM.setSI((byte) 3);
         //throw new Exception("PROGRAMOS PABAIGA");
@@ -223,7 +223,7 @@ public class VM {
         RM.setSI((byte) 2);
         RM.writeToHDD(Integer.parseInt(address, 16));
         RM.setSI((byte)0);
-    }
+    } */
 
     public void setZF() {
         C |= (1 << 6);

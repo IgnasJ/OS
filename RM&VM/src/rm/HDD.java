@@ -3,12 +3,14 @@ package rm;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.util.ArrayList;
 
 public class HDD {
 
     private static final int SECTORS = 1000;
     private static final int WORDS_PER_SECTOR = 16;
     private static final String EMPTY_SECTOR = "                ";
+    public static ArrayList<Integer> usedSectors = new ArrayList<>();
 
     private static RandomAccessFile file;
 
@@ -32,6 +34,7 @@ public class HDD {
         try {
             file.seek(sector * WORDS_PER_SECTOR * 2);
             file.writeChars(new String(data));
+            usedSectors.add(sector);
         }
         catch (IOException e) {
             e.printStackTrace();
@@ -69,6 +72,7 @@ public class HDD {
         try {
             file.seek(sector * WORDS_PER_SECTOR * 2);
             file.writeChars(EMPTY_SECTOR);
+            usedSectors.remove(sector);
         }
         catch (IOException e) {
             e.printStackTrace();
