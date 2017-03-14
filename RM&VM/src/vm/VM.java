@@ -5,8 +5,6 @@ import rm.RM;
 
 public class VM {
 
-    /*private int R1 ;
-    private int R2;*/
     private byte C;
     private short IC;
 
@@ -43,8 +41,6 @@ public class VM {
             LL(line.substring(3, 4));
         } */else if (line.substring(0, 2).equals("LR")) {
             LR(line.substring(3, 4));
-        } else if (line.substring(0, 2).equals("LD")) {
-            LD(line.substring(3, 4));
         } else if (line.substring(0, 2).equals("JM")) {
             JM(line.substring(3, 4));
         } else if (line.substring(0, 2).equals("JE")) {
@@ -60,6 +56,8 @@ public class VM {
         } else if (line.substring(0, 2).equals("GD")) {
             GD(line.substring(3, 4));
         } else {
+            // 2 - neatpažintas operacijos kodas
+            RM.setPI((byte)2);
             throw new Exception("PAKEIST I TINKAMA. NEATPAZINTA KOMANDA");
         }
     }
@@ -140,6 +138,7 @@ public class VM {
     }
 
     //LSx1x2 - į atmintį adresu 16 * x1 + x2 rašo žodį ar skaičių.
+    //Duomenu ivedimui is failo naudosim
     public void LS(String address) {
         ++IC;
     }
@@ -163,13 +162,13 @@ public class VM {
     }
     */
 
-    //LRx1x2 - nuskaito registrą R1
-    public void LR(String address) { ++IC; }
+    //LRXX- išveda į printerį XX registrą (R1 arba R2)
+    public void LR(String register) { ++IC; }
 
     //LDx1x2 - nuskaito registrą R2
-    public void LD(String address) {
-        ++IC;
-    }
+    //public void LD(String address) {
+    //    ++IC;
+    //}
 
     //JMx1x2 - besąlyginio valdymo perdavimo komanda. Ji reiškia, kad valdymas turi būti perduotas kodo segmento žodžiui, nurodytam adresu 16 * x1 + x2
     public void JM(String address) {

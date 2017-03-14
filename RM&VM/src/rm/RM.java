@@ -28,6 +28,7 @@ public class RM {
         readFromUSB();
         readFromHDD();
     }
+
     /*
         getCommand(int IC){
             memory[nuo_to_bloko_kuris skirtas programos kodui]
@@ -184,7 +185,7 @@ public class RM {
 
 
     public static void writeToHDD(int address) {
-        if (getSI() == 2 ){
+        if (getSI() == 2) {
             CH3 = 1;
             //paimt is atminties address
             //ir irasyt i hdd
@@ -193,7 +194,7 @@ public class RM {
     }
 
     public static void readFromHDD() {
-        if (getSI() == 1 ){
+        if (getSI() == 1) {
             CH3 = 1;
             //
             CH3 = 0;
@@ -201,13 +202,13 @@ public class RM {
     }
 
     //reads from flash memory to HDD
-    public static void readFromUSB(){
+    public static void readFromUSB() {
         CH1 = 1;
         FlashMemory.readToHDD("test.txt");
         CH1 = 0;
     }
 
-    public static void writeToPrinter(Object o){
+    public static void writeToPrinter(Object o) {
         CH2 = 1;
         Printer.print(o);
         CH2 = 0;
