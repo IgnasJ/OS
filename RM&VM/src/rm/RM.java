@@ -8,6 +8,7 @@ public class RM {
 
     public static short IC;
 
+    //CH1 - flash atmintine, CH2 - spausdintuvas, CH3 - kietasis diskas
     private static byte CH1, CH2, CH3;
     public static byte PI;
     private static byte SI;
@@ -20,13 +21,13 @@ public class RM {
 
     //realioj masinoj susimapinti
 
-    private static Memory memory;
+    private static Memory memory = new Memory();
+    private static SupervisorMemory sMemory = new SupervisorMemory();
 
     public RM() {
-        memory = new Memory();
+        readFromUSB();
         readFromHDD();
     }
-
     /*
         getCommand(int IC){
             memory[nuo_to_bloko_kuris skirtas programos kodui]
@@ -181,21 +182,35 @@ public class RM {
         return memory;
     }
 
-    public static void writeToHDD(int adrress) {
+
+    public static void writeToHDD(int address) {
         if (getSI() == 2 ){
+            CH3 = 1;
             //paimt is atminties address
             //ir irasyt i hdd
+            CH3 = 0;
         }
-
     }
 
     public static void readFromHDD() {
-        setSI((byte)1);
         if (getSI() == 1 ){
-            //paimt is atminties address
-            //ir irasyt i hdd
+            CH3 = 1;
+            //
+            CH3 = 0;
         }
+    }
 
+    //reads from flash memory to HDD
+    public static void readFromUSB(){
+        CH1 = 1;
+        FlashMemory.readToHDD("test.txt");
+        CH1 = 0;
+    }
+
+    public static void writeToPrinter(Object o){
+        CH2 = 1;
+        Printer.print(o);
+        CH2 = 0;
     }
 
 }

@@ -2,7 +2,7 @@ package rm;
 
 public class Memory {
     private final int BLOCK_COUNT = 16;
-    private final int BLOCK_SIZE = 16;
+    protected final int BLOCK_SIZE = 16;
 
     /* --------------------------------------
         0 1  2  3  4  5  6 7 8 9 A B C D E F|
@@ -29,7 +29,7 @@ public class Memory {
 
      */
 
-    private char[][] memory;
+    protected char[][] memory;
 
     public Memory(){
         memory = new char[BLOCK_COUNT][BLOCK_SIZE];
@@ -50,6 +50,15 @@ public class Memory {
         }
         else{
             memory[block] = data;
+        }
+    }
+
+    public void display(){
+        for(int x = 0; x < BLOCK_COUNT; ++x){
+            for(int y = 0; y < BLOCK_SIZE; ++y){
+                System.out.print(memory[x][y] + "|");
+            }
+            System.out.println();
         }
     }
 
