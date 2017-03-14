@@ -12,7 +12,7 @@ public class FlashMemory {
 
     public void readToHDD(String sourceCodeFileName) {
         try(FileReader fr = new FileReader(sourceCodeFileName)) {
-            System.out.println(fr.read());
+            System.out.println(fr.getEncoding());
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {

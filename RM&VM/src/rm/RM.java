@@ -2,165 +2,200 @@ package rm;
 
 public class RM {
 
-    private int R1;
-    private int R2;
-    private int PTR;
+    public static int R1;
+    public static int R2;
+    private static int PTR;
 
-    private short IC;
+    public static short IC;
 
-    private byte CH1, CH2, CH3;
-    private byte PI;
-    private byte SI;
-    private byte TI;
-    private byte IOI;
+    private static byte CH1, CH2, CH3;
+    public static byte PI;
+    private static byte SI;
+    private static byte TI;
+    private static byte IOI;
 
-    private byte MODE;
+    private static byte MODE;
     //First bit - ZF, 2nd - SF, 3rd - OF
-    private byte C;
+    private static byte C;
 
-    private Memory memory;
+    //realioj masinoj susimapinti
+
+    private static Memory memory;
 
     public RM() {
+        memory = new Memory();
+        readFromHDD();
     }
 
-
-    public void setZF() {
+    /*
+        getCommand(int IC){
+            memory[nuo_to_bloko_kuris skirtas programos kodui]
+        }
+    */
+    public static void setZF() {
         C |= (1 << 6);
     }
 
-    public void clearZF() {
+    public static void clearZF() {
         C &= ~(1 << 6);
     }
 
-    public int getZF() {
+    public static int getZF() {
         return (C >> 6) & 1;
     }
 
-    public void setSF() {
+    public static void setSF() {
         C |= (1 << 5);
     }
 
-    public void clearSF() {
+    public static void clearSF() {
         C &= ~(1 << 5);
     }
 
-    public int getSF() {
+    public static int getSF() {
         return (C >> 5) & 1;
     }
 
-    public void setOF() {
+    public static void setOF() {
         C |= (1 << 4);
     }
 
-    public void clearOF() {
+    public static void clearOF() {
         C &= ~(1 << 4);
     }
 
-    public int getOF() {
+    public static int getOF() {
         return (C >> 4) & 1;
     }
 
-    public int getR1() {
+    public static int getR1() {
         return R1;
     }
 
-    public void setR1(int r1) {
+    public static void setR1(int r1) {
         R1 = r1;
     }
 
-    public int getR2() {
+    public static int getR2() {
         return R2;
     }
 
-    public void setR2(int r2) {
+    public static void setR2(int r2) {
         R2 = r2;
     }
 
-    public int getPTR() {
+    public static int getPTR() {
         return PTR;
     }
 
-    public void setPTR(int PTR) {
-        this.PTR = PTR;
+    public static void setPTR(int ptr) {
+        PTR = ptr;
     }
 
-    public short getIC() {
+    public static short getIC() {
         return IC;
     }
 
-    public void setIC(short IC) {
-        this.IC = IC;
+    public static void setIC(short counter) {
+        IC = counter;
     }
 
-    public byte getCH1() {
+    public static byte getCH1() {
         return CH1;
     }
 
-    public void setCH1(byte CH1) {
-        this.CH1 = CH1;
+    public static void setCH1(byte state) {
+        CH1 = state;
     }
 
-    public byte getCH2() {
+    public static byte getCH2() {
         return CH2;
     }
 
-    public void setCH2(byte CH2) {
-        this.CH2 = CH2;
+    public static void setCH2(byte state) {
+        CH2 = state;
     }
 
-    public byte getCH3() {
+    public static byte getCH3() {
         return CH3;
     }
 
-    public void setCH3(byte CH3) {
-        this.CH3 = CH3;
+    public static void setCH3(byte state) {
+        CH3 = state;
     }
 
-    public byte getPI() {
+    public static byte getPI() {
         return PI;
     }
 
-    public void setPI(byte PI) {
-        this.PI = PI;
+    public static void setPI(byte state) {
+        PI = state;
     }
 
-    public byte getSI() {
+    public static byte getSI() {
         return SI;
     }
 
-    public void setSI(byte SI) {
-        this.SI = SI;
+    public static void setSI(byte state) {
+        switch (state) {
+            case 1:
+                System.out.println("SI:1. READ Interupt");
+                break;
+            case 2:
+                System.out.println("SI:2. WRITE Interupt");
+                break;
+            case 3:
+                System.out.println("SI:3. HALT Interupt");
+                break;
+            default:
+                break;
+        }
+        SI = state;
     }
 
-    public byte getTI() {
+    public static byte getTI() {
         return TI;
     }
 
-    public void setTI(byte TI) {
-        this.TI = TI;
+    public static void setTI(byte state) {
+        TI = state;
     }
 
-    public byte getIOI() {
+    public static byte getIOI() {
         return IOI;
     }
 
-    public void setIOI(byte IOI) {
-        this.IOI = IOI;
+    public static void setIOI(byte state) {
+        IOI = state;
     }
 
-    public byte getMODE() {
+    public static byte getMODE() {
         return MODE;
     }
 
-    public void setMODE(byte MODE) {
-        this.MODE = MODE;
+    public static void setMODE(byte mode) {
+        MODE = mode;
     }
 
-    public Memory getMemory() {
+    public static Memory getMemory() {
         return memory;
     }
 
-    public void setMemory(Memory memory) {
-        this.memory = memory;
+    public static void writeToHDD(int adrress) {
+        if (getSI() == 2 ){
+            //paimt is atminties address
+            //ir irasyt i hdd
+        }
+
     }
+
+    public static void readFromHDD() {
+        setSI((byte)1);
+        if (getSI() == 1 ){
+            //paimt is atminties address
+            //ir irasyt i hdd
+        }
+
+    }
+
 }

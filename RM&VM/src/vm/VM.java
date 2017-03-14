@@ -1,18 +1,19 @@
 package vm;
 
 import rm.Memory;
+import rm.RM;
 
 public class VM {
 
-    private int R1;
-    private int R2;
+    /*private int R1 ;
+    private int R2;*/
     private byte C;
     private short IC;
 
     private Memory memory;
 
-    public VM(Memory memory) {
-        this.memory = memory;
+    public VM() {
+        this.memory = RM.getMemory();
     }
 
     public void resolveCommand(String line) throws Exception {
@@ -58,7 +59,7 @@ public class VM {
         } else if (line.substring(0, 2).equals("PD")) {
             PD();
         } else if (line.substring(0, 2).equals("GD")) {
-            GD();
+            GD(line.substring(3,4));
         } else {
             throw new Exception("PAKEIST I TINKAMA. NEATPAZINTA KOMANDA");
         }
@@ -66,13 +67,13 @@ public class VM {
 
     // Sudeda R1 ir R2, įrašoma į R1. Jeigu rezultatas netelpa, OF = 1. Jeigu reikšmės ženklo bitas yra 1, SF = 1.
     public void ADD() {
-        if (R1 + R2 > Integer.MAX_VALUE) {
+        if (RM.R1 + RM.R2 > Integer.MAX_VALUE) {
             setOF();
             return;
         } else {
-            R1 += R2;
+            RM.R1 += RM.R2;
         }
-        if (((R1 >> 6) & 1) == 1) {
+        if (((RM.R1 >> 6) & 1) == 1) {
             setSF();
         }
         ++IC;
@@ -80,13 +81,13 @@ public class VM {
 
     // Iš R1 atimama R2, įrašoma į R1. Jeigu rezultatas netelpa, OF = 1. Jeigu reikšmės ženklo bitas yra 1, SF = 1.
     public void SUB() {
-        if (R1 - R2 < Integer.MIN_VALUE) {
+        if (RM.R1 - RM.R2 < Integer.MIN_VALUE) {
             setOF();
             return;
         } else {
-            R1 -= R2;
+            RM.R1 -= RM.R2;
         }
-        if (((R1 >> 6) & 1) == 1) {
+        if (((RM.R1 >> 6) & 1) == 1) {
             setSF();
         }
         ++IC;
@@ -94,13 +95,13 @@ public class VM {
 
     // Sudaugina R1 ir R2, įrašoma į R1.Jeigu rezultatas netelpa, OF = 1.Jeigu reikšmės ženklo bitas yra 1, SF = 1.
     public void MUL() {
-        if (R1 * R2 > Integer.MAX_VALUE) {
+        if (RM.R1 * RM.R2 > Integer.MAX_VALUE) {
             setOF();
             return;
         } else {
-            R1 *= R2;
+            RM.R1 *= RM.R2;
         }
-        if (((R1 >> 6) & 1) == 1) {
+        if (((RM.R1 >> 6) & 1) == 1) {
             setSF();
         }
         ++IC;
@@ -108,8 +109,8 @@ public class VM {
 
     // Padalina R1 iš R2, įrašoma į R1. Jeigu reikšmės ženklo bitas yra 1, SF = 1.
     public void DIV() {
-        R1 /= R2;
-        if (((R1 >> 6) & 1) == 1) {
+        RM.R1 /= RM.R2;
+        if (((RM.R1 >> 6) & 1) == 1) {
             setSF();
         }
         ++IC;
@@ -117,7 +118,7 @@ public class VM {
 
     //Ši komanda palygina registre R1 ir R2 ęsančias reikšmes. Jeigu reikšmės lygios, ZF = 1, priešingu atveju ZF = 0.
     public void CMP() {
-        if (R1 == R2) {
+        if (RM.R1 == RM.R2) {
             setZF();
         } else {
             clearZF();
@@ -128,8 +129,10 @@ public class VM {
     //LWx1x2 - į registrą R1 užkrauna žodį nurodytu adresu 16 * x1 + x2.
     public void LW(String address) {
 
-        //R2 = memory.get(Integer.parseInt(address, 16));
+        //RM.R1 = memory.get(Integer.parseInt(address, 16));
         ++IC;
+
+
     }
 
     //LEx1x2 - į registrą R2 užkrauna skaičių, adresu 16 * x1 + x2.
@@ -203,16 +206,20 @@ public class VM {
 
     //HALT - programos sustojimo taško komanda, t.y. programos valdymo pabaiga.
     public void HALT() throws Exception {
-        throw new Exception("PROGRAMOS PABAIGA");
+        RM.setSI((byte)3);
+        //throw new Exception("PROGRAMOS PABAIGA");
     }
 
     //PDx - SI tampa 1 ir valdymas perduodamas OS, duomenų kopijavimui iš kietojo disko į supervizorinės atminties vietą x.
     public void PD() {
-
+        RM.setSI((byte)1);
+        RM.readFromHDD();
     }
 
-    //GDx - SI tampa 2 ir valdymas perduodamas OS, duomenų kopijavimui į kietąjį diskąį iš supervizorinės atminties vietos x.
-    public void GD() {
+    //GDx - SI tampa 2 ir valdymas perduodamas OS, duomenų kopijavimui į kietąjį diską iš supervizorinės atminties vietos x.
+    public void GD(String address) {
+        RM.setSI((byte)2);
+        RM.writeToHDD(Integer.parseInt(address, 16));
 
     }
 
