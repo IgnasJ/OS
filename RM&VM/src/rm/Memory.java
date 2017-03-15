@@ -1,5 +1,7 @@
 package rm;
 
+import java.util.ArrayList;
+
 public class Memory {
     private final int BLOCK_COUNT = 16;
     protected final int BLOCK_SIZE = 16;
@@ -29,11 +31,10 @@ public class Memory {
 
      */
 
-    protected char[][] memory;
+    protected char[][] memory = new char[BLOCK_COUNT][BLOCK_SIZE];
+    protected ArrayList<Integer> usedBlocks = new ArrayList<>();
 
-    public Memory(){
-        memory = new char[BLOCK_COUNT][BLOCK_SIZE];
-    }
+    public Memory(){}
 
     public char[] getBlock(int block){
         if(block < 0 || block > (BLOCK_SIZE)){
@@ -50,6 +51,15 @@ public class Memory {
         }
         else{
             memory[block] = data;
+            usedBlocks.add(block);
+        }
+    }
+
+    public void writeBlockOffset(char[] data, int offset1, int offset2){
+        int blockID = offset1/16;
+        for(int i = 0; i < data.length; ++i){
+            memory[blockID][offset2] = data[i];
+            offset2++;
         }
     }
 

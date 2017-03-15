@@ -13,7 +13,8 @@ public class Main {
         VM vm = new VM();
         RM.readFromUSB();
         RM.PD("0");
-        RM.sMemory.display();
+        RM.moveMemory("0");
+        vm.processCommands();
 
         GUI gui = new GUI(/*cia gal paduota kazkuria masina?*/);
     }

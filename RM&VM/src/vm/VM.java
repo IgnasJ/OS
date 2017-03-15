@@ -1,6 +1,7 @@
 package vm;
 
 import rm.Memory;
+import rm.Printer;
 import rm.RM;
 
 public class VM {
@@ -14,48 +15,92 @@ public class VM {
         this.memory = RM.getMemory();
     }
 
+    public void processCommands(){
+        for(int cmdBlock = 0; cmdBlock < 4; ++cmdBlock){
+            char[] block = memory.getBlock(cmdBlock);
+            //Splitting every 4 'bytes'
+            String[] blockString = new String(block).split("(?<=\\G....)");
+            for(String s : blockString){
+                try {
+                    if(s.equals("HALT")){
+                        return;
+                    }
+                    if(s.contains("_")){
+                        s = s.replace("_", "");
+                    }
+                    resolveCommand(s);
+                }
+                catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+
     public void resolveCommand(String line) throws Exception {
+        System.out.println(line);
         if (line.equals("HALT")) {
             RM.HALT();
-        } else if (line.substring(0, 3).equals("ADD")) {
+        }
+        else if (line.substring(0, 3).equals("ADD")) {
             ADD();
-        } else if (line.substring(0, 3).equals("SUB")) {
+        }
+        else if (line.substring(0, 3).equals("SUB")) {
             SUB();
-        } else if (line.substring(0, 3).equals("MUL")) {
+        }
+        else if (line.substring(0, 3).equals("MUL")) {
             MUL();
-        } else if (line.substring(0, 3).equals("DIV")) {
+        }
+        else if (line.substring(0, 3).equals("DIV")) {
             DIV();
-        } else if (line.substring(0, 3).equals("CMP")) {
+        }
+        else if (line.substring(0, 3).equals("CMP")) {
             CMP();
-        } else if (line.substring(0, 2).equals("LW")) {
-            LW(line.substring(3, 4));
-        } else if (line.substring(0, 2).equals("LE")) {
-            LE(line.substring(3, 4));
-        } /*else if (line.substring(0, 2).equals("LS")) {
+        }
+        else if (line.substring(0, 2).equals("LW")) {
+            LW(Integer.parseInt(line.substring(2, 4)) + 64);
+        }
+        else if (line.substring(0, 2).equals("LE")) {
+            LE(Integer.parseInt(line.substring(2, 4)) + 64);
+        }
+        /*else if (line.substring(0, 2).equals("LS")) {
             LS(line.substring(3, 4));
-        } else if (line.substring(0, 2).equals("LX")) {
+        }
+        else if (line.substring(0, 2).equals("LX")) {
             LX(line.substring(3, 4));
-        } else if (line.substring(0, 2).equals("LY")) {
+        }
+         else if (line.substring(0, 2).equals("LY")) {
             LY(line.substring(3, 4));*
-        } else if (line.substring(0, 2).equals("LL")) {
+        }
+        else if (line.substring(0, 2).equals("LL")) {
             LL(line.substring(3, 4));
-        } */else if (line.substring(0, 2).equals("LR")) {
-            LR(line.substring(3, 4));
-        } else if (line.substring(0, 2).equals("JM")) {
+        }
+        */else if (line.substring(0, 2).equals("LR")) {
+            LR(line.substring(2, 4));
+        }
+        else if (line.substring(0, 2).equals("JM")) {
             JM(line.substring(3, 4));
-        } else if (line.substring(0, 2).equals("JE")) {
+        }
+        else if (line.substring(0, 2).equals("JE")) {
             JE(line.substring(3, 4));
-        } else if (line.substring(0, 2).equals("JG")) {
+        }
+        else if (line.substring(0, 2).equals("JG")) {
             JG(line.substring(3, 4));
-        } else if (line.substring(0, 2).equals("JL")) {
+        }
+        else if (line.substring(0, 2).equals("JL")) {
             JL(line.substring(3, 4));
-        } else if (line.substring(0, 2).equals("IC")) {
+        }
+        else if (line.substring(0, 2).equals("IC")) {
             IC(line.substring(3, 4));
-        } else if (line.substring(0, 2).equals("PD")) {
+        }
+        /*else if (line.substring(0, 2).equals("PD")) {
             PD();
-        } else if (line.substring(0, 2).equals("GD")) {
+        }
+         else if (line.substring(0, 2).equals("GD")) {
             GD(line.substring(3, 4));
-        } else {
+        }
+        */else {
             // 2 - neatpažintas operacijos kodas
             RM.setPI((byte)2);
             throw new Exception("PAKEIST I TINKAMA. NEATPAZINTA KOMANDA");
@@ -124,16 +169,32 @@ public class VM {
     }
 
     //LWx1x2 - į registrą R1 užkrauna žodį nurodytu adresu 16 * x1 + x2.
-    public void LW(String address) {
-        RM.R1 = memory.getBlock(address.charAt(0) - '0')[address.charAt(1) - '0'];
+    public void LW(int address) {
+        int block = address/16;
+        int offset = (address - 64)%16;
+
+        char[] word = new char[4];
+        int j = 0;
+        for(int i = offset; i < offset + 4; ++i){
+            word[j] = memory.getBlock(block)[i];
+            j++;
+        }
+        RM.R1 = Integer.parseInt(new String(word));
         ++IC;
     }
 
     //LEx1x2 - į registrą R2 užkrauna skaičių, adresu 16 * x1 + x2.
-    public void LE(String address) {
-        //zodis 4 baitai, skaicius 2?
-        RM.R2 = (short)memory.getBlock(address.charAt(0) - '0')[address.charAt(1) - '0'];
-        ++IC;
+    public void LE(int address) {
+        int block = address/16;
+        int offset = (address - 64)%16;
+
+        char[] word = new char[4];
+        int j = 0;
+        for(int i = offset; i < offset + 4; ++i){
+            word[j] = memory.getBlock(block)[i];
+            j++;
+        }
+        RM.R2 = Short.parseShort(new String(word));
         ++IC;
     }
 
@@ -163,7 +224,15 @@ public class VM {
     */
 
     //LRXX- išveda į printerį XX registrą (R1 arba R2)
-    public void LR(String register) { ++IC; }
+    public void LR(String register) {
+        if(register.equals("R1")){
+            Printer.print(RM.getR1());
+        }
+        if(register.equals("R2")){
+            Printer.print(RM.getR1());
+        }
+        ++IC;
+    }
 
     //LDx1x2 - nuskaito registrą R2
     //public void LD(String address) {

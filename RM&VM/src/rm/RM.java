@@ -180,24 +180,6 @@ public class RM {
         return memory;
     }
 
-
-    /*public static void writeToHDD(int address) {
-        if (getSI() == 2 ){
-            CH3 = 1;
-            //paimt is atminties address
-            //ir irasyt i hdd
-            CH3 = 0;
-        }
-    }
-
-    public static void readFromHDD() {
-        if (getSI() == 1 ){
-            CH3 = 1;
-            //
-            CH3 = 0;
-        }
-    } */
-
     //reads from flash memory to HDD
     public static void readFromUSB(){
         CH1 = 1;
@@ -223,13 +205,56 @@ public class RM {
         RM.setSI((byte) 1);
         CH3 = 1;
 
-        int block = address.charAt(0) - '0';
+        int block = Integer.parseInt(address);
         for(int i = 0; i < HDD.usedSectors.size(); ++i){
             sMemory.writeBlock(HDD.read(HDD.usedSectors.get(i)), block);
             block++;
         }
         CH3 = 0;
         RM.setSI((byte)0);
+    }
+
+    //Perkelia duomenis is supervizorines atminties i pagrindine
+    public static void moveMemory(String address){
+
+        boolean dataSeg = false;
+        boolean codeSeg = false;
+
+        int codeOffset = 64;
+        int currCodePos = 0;
+
+        int commandOffset = 0;
+        int currCommandPos = 0;
+
+        for(Integer bID : sMemory.usedBlocks){
+            char[] block = sMemory.getBlock(bID);
+            //Splitting every 4 'bytes'
+            String[] blockString = new String(block).split("(?<=\\G....)");
+            for(String s : blockString){
+                if(s.equals("DATA") && !dataSeg){
+                    dataSeg = true;
+                }
+                if(s.equals("CODE")){
+                    codeSeg = true;
+                }
+                if(!codeSeg && !s.equals("DATA")){
+                    memory.writeBlockOffset(s.toCharArray(), codeOffset, currCodePos);
+                    currCodePos+=4;
+                    codeOffset+=4;
+                    if(currCodePos == 16){
+                        currCodePos = 0;
+                    }
+                }
+                if(codeSeg && ! s.equals("CODE")){
+                    memory.writeBlockOffset(s.toCharArray(), commandOffset, currCommandPos);
+                    currCommandPos+=4;
+                    commandOffset+=4;
+                    if(currCommandPos == 16){
+                        currCommandPos = 0;
+                    }
+                }
+            }
+        }
     }
 
     //GDx - SI tampa 2 ir valdymas perduodamas OS, duomenų kopijavimui į kietąjį diską iš supervizorinės atminties vietos x.
