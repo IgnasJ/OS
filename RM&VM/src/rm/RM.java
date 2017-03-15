@@ -26,6 +26,7 @@ public class RM {
 
     public RM() {
     }
+
     /*
         getCommand(int IC){
             memory[nuo_to_bloko_kuris skirtas programos kodui]
@@ -181,13 +182,13 @@ public class RM {
     }
 
     //reads from flash memory to HDD
-    public static void readFromUSB(){
+    public static void readFromUSB() {
         CH1 = 1;
         FlashMemory.readToHDD("test.txt");
         CH1 = 0;
     }
 
-    public static void writeToPrinter(Object o){
+    public static void writeToPrinter(Object o) {
         CH2 = 1;
         Printer.print(o);
         CH2 = 0;
@@ -197,7 +198,7 @@ public class RM {
     public static void HALT() throws Exception {
         RM.setSI((byte) 3);
         //throw new Exception("PROGRAMOS PABAIGA");
-        RM.setSI((byte)0);
+        RM.setSI((byte) 0);
     }
 
     //PDx - SI tampa 1 ir valdymas perduodamas OS, duomenų kopijavimui iš kietojo disko į supervizorinės atminties vietą x.
@@ -206,16 +207,16 @@ public class RM {
         CH3 = 1;
 
         int block = Integer.parseInt(address);
-        for(int i = 0; i < HDD.usedSectors.size(); ++i){
+        for (int i = 0; i < HDD.usedSectors.size(); ++i) {
             sMemory.writeBlock(HDD.read(HDD.usedSectors.get(i)), block);
             block++;
         }
         CH3 = 0;
-        RM.setSI((byte)0);
+        RM.setSI((byte) 0);
     }
 
     //Perkelia duomenis is supervizorines atminties i pagrindine
-    public static void moveMemory(String address){
+    public static void moveMemory(String address) {
 
         boolean dataSeg = false;
         boolean codeSeg = false;
@@ -226,30 +227,30 @@ public class RM {
         int commandOffset = 0;
         int currCommandPos = 0;
 
-        for(Integer bID : sMemory.usedBlocks){
+        for (Integer bID : sMemory.usedBlocks) {
             char[] block = sMemory.getBlock(bID);
             //Splitting every 4 'bytes'
             String[] blockString = new String(block).split("(?<=\\G....)");
-            for(String s : blockString){
-                if(s.equals("DATA") && !dataSeg){
+            for (String s : blockString) {
+                if (s.equals("DATA") && !dataSeg) {
                     dataSeg = true;
                 }
-                if(s.equals("CODE")){
+                if (s.equals("CODE")) {
                     codeSeg = true;
                 }
-                if(!codeSeg && !s.equals("DATA")){
+                if (!codeSeg && !s.equals("DATA")) {
                     memory.writeBlockOffset(s.toCharArray(), codeOffset, currCodePos);
-                    currCodePos+=4;
-                    codeOffset+=4;
-                    if(currCodePos == 16){
+                    currCodePos += 4;
+                    codeOffset += 4;
+                    if (currCodePos == 16) {
                         currCodePos = 0;
                     }
                 }
-                if(codeSeg && ! s.equals("CODE")){
+                if (codeSeg && !s.equals("CODE")) {
                     memory.writeBlockOffset(s.toCharArray(), commandOffset, currCommandPos);
-                    currCommandPos+=4;
-                    commandOffset+=4;
-                    if(currCommandPos == 16){
+                    currCommandPos += 4;
+                    commandOffset += 4;
+                    if (currCommandPos == 16) {
                         currCommandPos = 0;
                     }
                 }
@@ -264,7 +265,7 @@ public class RM {
         //paimt is atminties address
         //ir irasyt i hdd
         CH3 = 0;
-        RM.setSI((byte)0);
+        RM.setSI((byte) 0);
     }
 
 }

@@ -34,38 +34,37 @@ public class Memory {
     protected char[][] memory = new char[BLOCK_COUNT][BLOCK_SIZE];
     protected ArrayList<Integer> usedBlocks = new ArrayList<>();
 
-    public Memory(){}
+    public Memory() {
+    }
 
-    public char[] getBlock(int block){
-        if(block < 0 || block > (BLOCK_SIZE)){
+    public char[] getBlock(int block) {
+        if (block < 0 || block > (BLOCK_SIZE)) {
             throw new IllegalArgumentException("Incorrect block specified!");
-        }
-        else{
+        } else {
             return memory[block];
         }
     }
 
-    public void writeBlock(char[] data, int block){
-        if(block < 0 || block > (BLOCK_SIZE)){
+    public void writeBlock(char[] data, int block) {
+        if (block < 0 || block > (BLOCK_SIZE)) {
             throw new IllegalArgumentException("Incorrect block specified!");
-        }
-        else{
+        } else {
             memory[block] = data;
             usedBlocks.add(block);
         }
     }
 
-    public void writeBlockOffset(char[] data, int offset1, int offset2){
-        int blockID = offset1/16;
-        for(int i = 0; i < data.length; ++i){
+    public void writeBlockOffset(char[] data, int offset1, int offset2) {
+        int blockID = offset1 / 16;
+        for (int i = 0; i < data.length; ++i) {
             memory[blockID][offset2] = data[i];
             offset2++;
         }
     }
 
-    public void display(){
-        for(int x = 0; x < BLOCK_COUNT; ++x){
-            for(int y = 0; y < BLOCK_SIZE; ++y){
+    public void display() {
+        for (int x = 0; x < BLOCK_COUNT; ++x) {
+            for (int y = 0; y < BLOCK_SIZE; ++y) {
                 System.out.print(memory[x][y] + "|");
             }
             System.out.println();

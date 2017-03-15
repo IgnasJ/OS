@@ -21,60 +21,57 @@ public class HDD {
                 file.seek(i * WORDS_PER_SECTOR * 2);
                 file.writeChars(EMPTY_SECTOR);
             }
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public static void write(char[] data, int sector){
-        if(sector < 0 || sector > SECTORS){
+    public static void write(char[] data, int sector) {
+        if (sector < 0 || sector > SECTORS) {
             throw new IllegalArgumentException("Incorrect sector");
         }
         try {
             file.seek(sector * WORDS_PER_SECTOR * 2);
             file.writeChars(new String(data));
             usedSectors.add(sector);
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
-    public static char[] read(int sector){
-        if(sector < 0 || sector > SECTORS){
+
+    public static char[] read(int sector) {
+        if (sector < 0 || sector > SECTORS) {
             throw new IllegalArgumentException("Incorrect sector");
         }
         try {
-            file.seek(sector*WORDS_PER_SECTOR*2);
+            file.seek(sector * WORDS_PER_SECTOR * 2);
             char[] data = new char[WORDS_PER_SECTOR];
-            for(int i = 0; i < WORDS_PER_SECTOR; ++i){
+            for (int i = 0; i < WORDS_PER_SECTOR; ++i) {
                 data[i] = file.readChar();
             }
             return data;
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
         return null;
     }
 
-    public static boolean isEmpty(int sector){
-        if(sector < 0 || sector > SECTORS){
+    public static boolean isEmpty(int sector) {
+        if (sector < 0 || sector > SECTORS) {
             throw new IllegalArgumentException("Incorrect sector");
         }
         return new String(read(sector)).equals(EMPTY_SECTOR);
     }
 
-    public static void clear(int sector){
-        if(sector < 0 || sector > SECTORS){
+    public static void clear(int sector) {
+        if (sector < 0 || sector > SECTORS) {
             throw new IllegalArgumentException("Incorrect sector");
         }
         try {
             file.seek(sector * WORDS_PER_SECTOR * 2);
             file.writeChars(EMPTY_SECTOR);
             usedSectors.remove(sector);
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }

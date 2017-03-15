@@ -15,22 +15,22 @@ public class VM {
         this.memory = RM.getMemory();
     }
 
-    public void processCommands(){
-        for(int cmdBlock = 0; cmdBlock < 4; ++cmdBlock){
+    public void processCommands() {
+        for (int cmdBlock = 0; cmdBlock < 4; ++cmdBlock) {
             char[] block = memory.getBlock(cmdBlock);
             //Splitting every 4 'bytes'
             String[] blockString = new String(block).split("(?<=\\G....)");
-            for(String s : blockString){
+            for (String s : blockString) {
                 try {
-                    if(s.equals("HALT")){
+                    if (s.equals("HALT")) {
                         return;
                     }
-                    if(s.contains("_")){
+                    //nebutina turbut
+                    if (s.contains("_")) {
                         s = s.replace("_", "");
                     }
                     resolveCommand(s);
-                }
-                catch (Exception e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
@@ -39,30 +39,25 @@ public class VM {
 
 
     public void resolveCommand(String line) throws Exception {
-        System.out.println(line);
+        //System.out.println(line);
         if (line.equals("HALT")) {
             RM.HALT();
-        }
-        else if (line.substring(0, 3).equals("ADD")) {
+        } else if (line.substring(0, 3).equals("ADD")) {
             ADD();
-        }
-        else if (line.substring(0, 3).equals("SUB")) {
+        } else if (line.substring(0, 3).equals("SUB")) {
             SUB();
-        }
-        else if (line.substring(0, 3).equals("MUL")) {
+        } else if (line.substring(0, 3).equals("MUL")) {
             MUL();
-        }
-        else if (line.substring(0, 3).equals("DIV")) {
+        } else if (line.substring(0, 3).equals("DIV")) {
             DIV();
-        }
-        else if (line.substring(0, 3).equals("CMP")) {
+        } else if (line.substring(0, 3).equals("CMP")) {
             CMP();
-        }
-        else if (line.substring(0, 2).equals("LW")) {
+        } else if (line.substring(0, 2).equals("LW")) {
             LW(Integer.parseInt(line.substring(2, 4)) + 64);
-        }
-        else if (line.substring(0, 2).equals("LE")) {
-            LE(Integer.parseInt(line.substring(2, 4)) + 64);
+        } else if (line.substring(0, 2).equals("LE")) {
+            LE(Integer.parseInt(line.substring(2, 4), 16) + 64);
+        } else if (line.substring(0, 2).equals("PM")) {
+            PM(Integer.parseInt(line.substring(2, 4), 16) + 64);
         }
         /*else if (line.substring(0, 2).equals("LS")) {
             LS(line.substring(3, 4));
@@ -76,22 +71,18 @@ public class VM {
         else if (line.substring(0, 2).equals("LL")) {
             LL(line.substring(3, 4));
         }
-        */else if (line.substring(0, 2).equals("LR")) {
+        */
+        else if (line.substring(0, 2).equals("LR")) {
             LR(line.substring(2, 4));
-        }
-        else if (line.substring(0, 2).equals("JM")) {
+        } else if (line.substring(0, 2).equals("JM")) {
             JM(line.substring(3, 4));
-        }
-        else if (line.substring(0, 2).equals("JE")) {
+        } else if (line.substring(0, 2).equals("JE")) {
             JE(line.substring(3, 4));
-        }
-        else if (line.substring(0, 2).equals("JG")) {
+        } else if (line.substring(0, 2).equals("JG")) {
             JG(line.substring(3, 4));
-        }
-        else if (line.substring(0, 2).equals("JL")) {
+        } else if (line.substring(0, 2).equals("JL")) {
             JL(line.substring(3, 4));
-        }
-        else if (line.substring(0, 2).equals("IC")) {
+        } else if (line.substring(0, 2).equals("IC")) {
             IC(line.substring(3, 4));
         }
         /*else if (line.substring(0, 2).equals("PD")) {
@@ -100,9 +91,10 @@ public class VM {
          else if (line.substring(0, 2).equals("GD")) {
             GD(line.substring(3, 4));
         }
-        */else {
+        */
+        else {
             // 2 - neatpažintas operacijos kodas
-            RM.setPI((byte)2);
+            RM.setPI((byte) 2);
             throw new Exception("PAKEIST I TINKAMA. NEATPAZINTA KOMANDA");
         }
     }
@@ -170,12 +162,12 @@ public class VM {
 
     //LWx1x2 - į registrą R1 užkrauna žodį nurodytu adresu 16 * x1 + x2.
     public void LW(int address) {
-        int block = address/16;
-        int offset = (address - 64)%16;
+        int block = address / 16;
+        int offset = (address - 64) % 16;
 
         char[] word = new char[4];
         int j = 0;
-        for(int i = offset; i < offset + 4; ++i){
+        for (int i = offset; i < offset + 4; ++i) {
             word[j] = memory.getBlock(block)[i];
             j++;
         }
@@ -185,12 +177,12 @@ public class VM {
 
     //LEx1x2 - į registrą R2 užkrauna skaičių, adresu 16 * x1 + x2.
     public void LE(int address) {
-        int block = address/16;
-        int offset = (address - 64)%16;
+        int block = address / 16;
+        int offset = (address - 64) % 16;
 
         char[] word = new char[4];
         int j = 0;
-        for(int i = offset; i < offset + 4; ++i){
+        for (int i = offset; i < offset + 4; ++i) {
             word[j] = memory.getBlock(block)[i];
             j++;
         }
@@ -225,14 +217,31 @@ public class VM {
 
     //LRXX- išveda į printerį XX registrą (R1 arba R2)
     public void LR(String register) {
-        if(register.equals("R1")){
+        if (register.equals("R1")) {
             Printer.print(RM.getR1());
         }
-        if(register.equals("R2")){
+        if (register.equals("R2")) {
             Printer.print(RM.getR1());
         }
         ++IC;
     }
+
+    //Isveda i ekrana atminties 4 baitus
+    public void PM(int address) {
+
+        int block = address / 16;
+        int offset = (address - 64) % 16;
+
+        char[] word = new char[4];
+        int j = 0;
+        for (int i = offset; i < offset + 4; ++i) {
+            word[j] = memory.getBlock(block)[i];
+            j++;
+        }
+        Printer.print(new String(word));
+        ++IC;
+    }
+
 
     //LDx1x2 - nuskaito registrą R2
     //public void LD(String address) {
@@ -247,7 +256,7 @@ public class VM {
     //JEx1x2 - valdymas turi būti perduotas kodo segmento žodžiui, nurodytam adresu 16* x1 + x2 jeigu ZF = 1
     public void JE(String address) {
         if (getZF() == 1) {
-
+            //processCommands() tik paduot parametra, nuo kurios vietos vykdyt koda
         }
         ++IC;
     }
@@ -262,37 +271,18 @@ public class VM {
 
     //JLx1x2 - valdymas turi būti perduotas kodo segmento žodžiui, nurodytam adresu 16* x1 + x2 jeigu SF != OF
     public void JL(String address) {
-        if (!(getSF() == getOF())) {
+        if (getSF() != getOF()) {
             Integer.parseInt(address, 16);
         }
         ++IC;
     }
 
     /// /IC - komandos skaitliukas. IC = 16 * x1 + x2;
+    //Kam jis ir kuo skiriasi nuo JM? Kam ja pridejau isvis? :D
     public void IC(String address) {
         IC = Short.parseShort(address, 16);
     }
 
-    /* //HALT - programos sustojimo taško komanda, t.y. programos valdymo pabaiga.
-    public void HALT() throws Exception {
-        RM.setSI((byte) 3);
-        //throw new Exception("PROGRAMOS PABAIGA");
-        RM.setSI((byte)0);
-    }
-
-    //PDx - SI tampa 1 ir valdymas perduodamas OS, duomenų kopijavimui iš kietojo disko į supervizorinės atminties vietą x.
-    public void PD() {
-        RM.setSI((byte) 1);
-        RM.readFromHDD();
-        RM.setSI((byte)0);
-    }
-
-    //GDx - SI tampa 2 ir valdymas perduodamas OS, duomenų kopijavimui į kietąjį diską iš supervizorinės atminties vietos x.
-    public void GD(String address) {
-        RM.setSI((byte) 2);
-        RM.writeToHDD(Integer.parseInt(address, 16));
-        RM.setSI((byte)0);
-    } */
 
     public void setZF() {
         C |= (1 << 6);
