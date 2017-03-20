@@ -26,6 +26,7 @@ public class RM {
 
     public RM() {
     }
+
     /*
         getCommand(int IC){
             memory[nuo_to_bloko_kuris skirtas programos kodui]
@@ -104,7 +105,10 @@ public class RM {
     }
 
     public static void setCH1(byte state) {
-        CH1 = state;
+        channelHelper(state, "CH1:0. FlashMemory channel freed",
+                "CH1:1. FlashMemory channel busy - transferring data");
+        if (state == 0 || state == 1)
+            CH1 = state;
     }
 
     public static byte getCH2() {
@@ -112,7 +116,10 @@ public class RM {
     }
 
     public static void setCH2(byte state) {
-        CH2 = state;
+        channelHelper(state, "CH2:0. Printer channel freed",
+                "CH2:1. Printer channel busy - transferring data");
+        if (state == 0 || state == 1)
+            CH2 = state;
     }
 
     public static byte getCH3() {
@@ -120,15 +127,49 @@ public class RM {
     }
 
     public static void setCH3(byte state) {
-        CH3 = state;
+        channelHelper(state, "CH3:0. Supervisor-HDD channel freed",
+                "CH3:1. Supervisor-HDD channel busy - transferring data");
+        if (state == 0 || state == 1)
+            CH3 = state;
     }
+
+    private static void channelHelper(byte state, String freedInterrupt, String busyInterrupt) {
+        switch (state) {
+            case 0:
+                System.out.println(freedInterrupt);
+                break;
+            case 1:
+                System.out.println(busyInterrupt);
+                break;
+            default:
+                break;
+        }
+    }
+
 
     public static byte getPI() {
         return PI;
     }
 
     public static void setPI(byte state) {
-        PI = state;
+        switch (state) {
+            case 1:
+                System.out.println("PI:1. OUT OF MEMORY RANGE Interrupt");
+                break;
+            case 2:
+                System.out.println("PI:2. UNKNOWN OPERATION CODE Interrupt");
+                break;
+            case 3:
+                System.out.println("PI:3. DIVISION BY ZERO Interrupt");
+                break;
+            case 4:
+                System.out.println("PI:4. ARITHMETIC OPERATION ERROR Interrupt");
+                break;
+            default:
+                break;
+        }
+        if (state == 1 || state == 2 || state == 3 || state == 4)
+            PI = state;
     }
 
     public static byte getSI() {
@@ -138,18 +179,19 @@ public class RM {
     public static void setSI(byte state) {
         switch (state) {
             case 1:
-                System.out.println("SI:1. READ Interupt");
+                System.out.println("SI:1. READ Command Interupt");
                 break;
             case 2:
-                System.out.println("SI:2. WRITE Interupt");
+                System.out.println("SI:2. WRITE Command Interupt");
                 break;
             case 3:
-                System.out.println("SI:3. HALT Interupt");
+                System.out.println("SI:3. HALT Command Interupt");
                 break;
             default:
                 break;
         }
-        SI = state;
+        if (state == 1 || state == 2 || state == 3)
+            SI = state;
     }
 
     public static byte getTI() {
@@ -165,7 +207,21 @@ public class RM {
     }
 
     public static void setIOI(byte state) {
-        IOI = state;
+        switch (state) {
+            case 1:
+                System.out.println("IOI:1. CH1 Input/Output interrupt");
+                break;
+            case 2:
+                System.out.println("IOI:2. CH2 Input/Output interrupt");
+                break;
+            case 3:
+                System.out.println("IOI:3. CH3 Input/Output interrupt");
+                break;
+            default:
+                break;
+        }
+        if (state == 1 || state == 2 || state == 3)
+            IOI = state;
     }
 
     public static byte getMODE() {
@@ -173,7 +229,18 @@ public class RM {
     }
 
     public static void setMODE(byte mode) {
-        MODE = mode;
+        switch (mode) {
+            case 0:
+                System.out.println("Entering user mode");
+                break;
+            case 1:
+                System.out.println("Entering supervizor mode");
+                break;
+            default:
+                break;
+        }
+        if (mode == 0 || mode == 1)
+            MODE = mode;
     }
 
     public static Memory getMemory() {
@@ -181,41 +248,41 @@ public class RM {
     }
 
     //reads from flash memory to HDD
-    public static void readFromUSB(){
-        CH1 = 1;
+    public static void readFromUSB() {
+        setCH1((byte) 1);
         FlashMemory.readToHDD("test.txt");
-        CH1 = 0;
+        setCH1((byte) 0);
     }
 
-    public static void writeToPrinter(Object o){
-        CH2 = 1;
+    public static void writeToPrinter(Object o) {
+        setCH2((byte) 1);
         Printer.print(o);
-        CH2 = 0;
+        setCH2((byte) 0);
     }
 
     //HALT - programos sustojimo taško komanda, t.y. programos valdymo pabaiga.
     public static void HALT() throws Exception {
-        RM.setSI((byte) 3);
+        setSI((byte) 3);
         //throw new Exception("PROGRAMOS PABAIGA");
-        RM.setSI((byte)0);
+        setSI((byte) 0);
     }
 
     //PDx - SI tampa 1 ir valdymas perduodamas OS, duomenų kopijavimui iš kietojo disko į supervizorinės atminties vietą x.
     public static void PD(String address) {
-        RM.setSI((byte) 1);
-        CH3 = 1;
+        setSI((byte) 1);
+        setCH3((byte) 1);
 
         int block = Integer.parseInt(address);
-        for(int i = 0; i < HDD.usedSectors.size(); ++i){
+        for (int i = 0; i < HDD.usedSectors.size(); ++i) {
             sMemory.writeBlock(HDD.read(HDD.usedSectors.get(i)), block);
             block++;
         }
-        CH3 = 0;
-        RM.setSI((byte)0);
+        setCH3((byte) 0);
+        setSI((byte) 0);
     }
 
     //Perkelia duomenis is supervizorines atminties i pagrindine
-    public static void moveMemory(String address){
+    public static void moveMemory(String address) {
 
         boolean dataSeg = false;
         boolean codeSeg = false;
@@ -226,30 +293,30 @@ public class RM {
         int commandOffset = 0;
         int currCommandPos = 0;
 
-        for(Integer bID : sMemory.usedBlocks){
+        for (Integer bID : sMemory.usedBlocks) {
             char[] block = sMemory.getBlock(bID);
             //Splitting every 4 'bytes'
             String[] blockString = new String(block).split("(?<=\\G....)");
-            for(String s : blockString){
-                if(s.equals("DATA") && !dataSeg){
+            for (String s : blockString) {
+                if (s.equals("DATA") && !dataSeg) {
                     dataSeg = true;
                 }
-                if(s.equals("CODE")){
+                if (s.equals("CODE")) {
                     codeSeg = true;
                 }
-                if(!codeSeg && !s.equals("DATA")){
+                if (!codeSeg && !s.equals("DATA")) {
                     memory.writeBlockOffset(s.toCharArray(), codeOffset, currCodePos);
-                    currCodePos+=4;
-                    codeOffset+=4;
-                    if(currCodePos == 16){
+                    currCodePos += 4;
+                    codeOffset += 4;
+                    if (currCodePos == 16) {
                         currCodePos = 0;
                     }
                 }
-                if(codeSeg && ! s.equals("CODE")){
+                if (codeSeg && !s.equals("CODE")) {
                     memory.writeBlockOffset(s.toCharArray(), commandOffset, currCommandPos);
-                    currCommandPos+=4;
-                    commandOffset+=4;
-                    if(currCommandPos == 16){
+                    currCommandPos += 4;
+                    commandOffset += 4;
+                    if (currCommandPos == 16) {
                         currCommandPos = 0;
                     }
                 }
@@ -259,12 +326,12 @@ public class RM {
 
     //GDx - SI tampa 2 ir valdymas perduodamas OS, duomenų kopijavimui į kietąjį diską iš supervizorinės atminties vietos x.
     public static void GD(String address) {
-        RM.setSI((byte) 2);
-        CH3 = 1;
+        setSI((byte) 2);
+        setCH1((byte) 1);
         //paimt is atminties address
         //ir irasyt i hdd
-        CH3 = 0;
-        RM.setSI((byte)0);
+        setCH1((byte) 0);
+        setSI((byte) 0);
     }
 
 }
