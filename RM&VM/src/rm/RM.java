@@ -25,6 +25,7 @@ public class RM {
     public static SupervisorMemory sMemory = new SupervisorMemory();
 
     public RM() {
+        System.out.println("RM init.");
     }
 
     /*
@@ -279,11 +280,12 @@ public class RM {
         }
         setCH3((byte) 0);
         setSI((byte) 0);
+        System.out.println("Loaded from HDD su supervisor memory");
     }
 
     //Perkelia duomenis is supervizorines atminties i pagrindine
     public static void moveMemory(String address) {
-
+        System.out.println("move memory from supervisor to main memory");
         boolean dataSeg = false;
         boolean codeSeg = false;
 
@@ -334,4 +336,26 @@ public class RM {
         setSI((byte) 0);
     }
 
+//    @Override
+    public static String getInfo() {
+        return "+------------------+" + '\n' +
+                "|       RM         |" + '\n' +
+                "+------------------+" + '\n' +
+                "R1: " + R1 + '\n' +
+                "R2: " + R2 + '\n' +
+                "CH1: " + getCH1() + '\n' +
+                "CH2: " + getCH2() + '\n' +
+                "CH3: " + getCH3() + '\n' +
+                "PI: " + getPI() + '\n' +
+                "SI: " + getSI() + '\n' +
+                "TI: " + getTI() + '\n' +
+                "IOI: " + getIOI() + '\n' +
+                "IC: " + getIC() + '\n' +
+                "MODE: " + getMODE() + '\n' +
+                "ZF: " + getZF() + '\n' +
+                "SF: " + getSF() + '\n' +
+                "OF: " + getOF() + '\n' +
+                "+------------------+";
+
+    }
 }

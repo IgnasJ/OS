@@ -30,5 +30,6 @@ public class FlashMemory {
         catch (IOException e) {
             e.printStackTrace();
         }
+        System.out.println("Red from FLASH to HDD.");
     }
 }

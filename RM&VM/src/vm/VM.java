@@ -13,6 +13,7 @@ public class VM {
 
     public VM() {
         this.memory = RM.getMemory();
+        System.out.println("VM init.");
     }
 
     public void processCommands() {
@@ -29,6 +30,11 @@ public class VM {
                     if (s.contains("_")) {
                         s = s.replace("_", "");
                     }
+                    if (RM.getMODE() == 0) {
+                        System.out.println(RM.getInfo());
+                        System.out.println("VM " + this.toString());
+                        System.in.read();
+                    }
                     resolveCommand(s);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -39,7 +45,7 @@ public class VM {
 
 
     public void resolveCommand(String line) throws Exception {
-        //System.out.println(line);
+        System.out.println("Resolve command: " + line);
         if (line.equals("HALT")) {
             RM.HALT();
         } else if (line.substring(0, 3).equals("ADD")) {
@@ -318,5 +324,25 @@ public class VM {
 
     public int getOF() {
         return (C >> 4) & 1;
+    }
+
+    public short getIC() {
+        return IC;
+    }
+
+    public void setIC(short IC) {
+        this.IC = IC;
+    }
+
+    @Override
+    public String toString() {
+        return  "+------------------+" + '\n' +
+                "|       VM         |" + '\n' +
+                "+------------------+" + '\n' +
+                "| IC: " + getIC() + '\n' +
+                "| ZF: " + getZF() + '\n' +
+                "| SF: " + getSF() + '\n' +
+                "| OF: " + getOF() + '\n' +
+                "+-----------------+";
     }
 }

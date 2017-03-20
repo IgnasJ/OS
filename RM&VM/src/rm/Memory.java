@@ -1,6 +1,7 @@
 package rm;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Memory {
     private final int BLOCK_COUNT = 16;
@@ -71,4 +72,13 @@ public class Memory {
         }
     }
 
+    @Override
+    public String toString() {
+        return "Memory{" +
+                "BLOCK_COUNT=" + BLOCK_COUNT +
+                ", BLOCK_SIZE=" + BLOCK_SIZE +
+                ", memory=" + Arrays.toString(memory) +
+                ", usedBlocks=" + usedBlocks +
+                '}';
+    }
 }

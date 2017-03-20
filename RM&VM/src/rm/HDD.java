@@ -24,6 +24,7 @@ public class HDD {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        System.out.println("HDD init.");
     }
 
     public static void write(char[] data, int sector) {
