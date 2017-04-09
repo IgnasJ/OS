@@ -64,6 +64,13 @@ Visi kanalai centriniame procesoriuje turi atitinkamus 1b registrus CH1, CH2, CH
 Įvedimo įrenginys - flash atmintinė, išvedimo įrenginys - spausdintuvas. Abu turi 16 žodžių dydžio buferius apsikeisti duomenimis. Užpildžius buferį, jis yra siunčiamas
 į išvedimo įrenginį arba į kanalą priklausomai nuo situacijos.
 
+\item[Taimerio mechanizmas] \leavevmode \\
+Atsakingas už geresnį užduočių išlygiagretinimą. Laikoma, kad ta pati užduotis negali būti vykdoma ilgiau nei N laiko momentų. 
+Laikome, kad įvedimo/išvedimo instrukcijos atliekamos per 3 taktus, visos kitos per 1 taktą. Pradedant virtualios mašinos užduoties vykdymą,
+TI registro rekšmė yra nustatoma tam tikrai reikšmei M. Įvykdžius eilinę instrukciją, TI reikšmė mažinama priklausomai nuo to per kiek taktų ta instrukcija yra atliekama.
+Kai TI reikšmė tampa 0, mikrokomanda aptinka taimerio pertraukimą.
+
+
   \item[Semaforas] \leavevmode \\
 Semaforas S tai sveikas neneigiamas skaičius, su kuriuo atliekamos operacijos P(S) ir V(S), kur P ir V nauji primityvai. Operacijos pasižymi savybėmis:
 \begin{itemize}
