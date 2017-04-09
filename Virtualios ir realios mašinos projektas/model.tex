@@ -83,4 +83,63 @@ Procesų primityvų paskirtis - pateikti vienodą ir paprastą vartotojo sąsaj�
 		\item Aktyvuoti procesą - keičiama proceso būsena iš blokuotos-sustabdyto į blokuotą arba pasiruošusios-sustabdytos į pasiruošusią.
 	\end{itemize}
 
+\subsection{Resursai}
+Resursas yra tai, dėl ko varžosi procesai. Dėl resursų trūkumo procesai blokuojasi, gavę reikiamą resursą tampa pasiruošusiais. 
 
+\subsubsection{Resurso primityvai}
+	\begin{itemize}
+		\item Kurti resursą
+		\item Naikinti resursą
+		\item Prašyti resurso
+		\item Atlaisvinti resursą
+	\end{itemize}
+
+\subsubsection{Resurso paskirstytojas}
+Kaip kad procesorius yra skirstomas planuotojo, kiekvienas resursas taipogi yra skirstomas tarn tikro paskirstytojo. Prašydamas resurso ar norėdamas jį atlaisvinti, procesas kreipiasi į atitinkama. resursų paskirstytojo kuris privalo jį aptarnauti.
+Resursų paskirstytojo paskirtis - suteikti paprašyta. resurso elementų kiekį procesui. Resursų paskirstytojo algoritmas gali būti sudėtingas. Pavyzdžiui, turi būti numatyta galimybė atiduoti resurso elementą konkrečiam procesui, arba prašyti kelių resurso elementų. Resurso paskirstytojas peržvelgia visus laukiančius šio resurso procesų sajašą, ir, sutikęs galimybę aptarnauti process perduoda jam reikalingus resurso elementus ir pažymi jį pasiruošusiu. Paskirstytojo pabaigoje yra iškviečiamas planuotojas.
+
+\subsubsection{Vartotojo užduoties būsenos kitimas sistemoje}
+
+\subsubsection{Bazinių procesų paketas}
+Mūsų modelyje bus naudojami šie procesai:
+	\begin{itemize}
+		\item StartStop – šakninis procesas, sukuriantis bei naikinantis sisteminius procesus ir resursus;
+		\item ReadFromKey – programos nuskaitymas ir kopijavimas į supervizorinę atmintį;
+		\item MainProc – procesas, valdantis JobGovernor procesus;
+		\item JobGovernor – virtualios mašinos proceso tėvas, valdantis virtualios mašinos proceso darbą;
+		\item VirtualMachine – procesas, atsakantis už vartotojiškos programos vykdymą;
+		\item Interrupt – procesas, apdorojantis virtualios mašinos pertraukimą sukėlusią situaciją;
+		\item PrintLine – į išvedimo įrenginį persiunčiamas blokas iš vartotojo atminties;
+		\item GetLine – iš įvedimo įrenginio nuskaitomas blokas į vartotojo atminties.
+		\item Memory Governor - valdo bendrąją atmintį.
+	\end{itemize}
+Visi procesai, išskyrus VirtualMachine (šį procesą sukuria JobGovernor) ir JobGovernor, yra sukuriami sistemos darbo pradžioje proceso StartStop.
+
+\subsection{Procesų aprašai}
+
+\subsubsection{Procesas StartStop}
+
+\subsubsection{Procesas ReadFromKey}
+
+\subsubsection{Procesas MainProc}
+
+\subsubsection{Procesas JobGovernor}
+
+\subsubsection{Procesas VirtualMachine}
+
+\subsubsection{Procesas Interrupt}
+
+\subsubsection{Procesas PrintLine}
+
+\subsubsection{Procesas GetLine}
+
+\subsubsection{Procesas Memory Governor}
+
+\subsection{Samaforai}
+Samaforai aprašyti prie RM.
+
+\subsection{Deskriptoriai}
+
+\subsubsection{Procesų deskriptoriai}
+
+\subsubsection{Resursų deskriptoriai}
