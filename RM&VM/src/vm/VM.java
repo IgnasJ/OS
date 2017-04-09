@@ -17,28 +17,31 @@ public class VM {
     }
 
     public void processCommands() {
-        for (int cmdBlock = 0; cmdBlock < 4; ++cmdBlock) {
-            char[] block = memory.getBlock(cmdBlock);
-            //Splitting every 4 'bytes'
-            String[] blockString = new String(block).split("(?<=\\G....)");
-            for (String s : blockString) {
-                try {
-                    if (s.equals("HALT")) {
-                        return;
-                    }
-                    //nebutina turbut
-                    if (s.contains("_")) {
-                        s = s.replace("_", "");
-                    }
-                    if (RM.getMODE() == 0) {
-                        System.out.println(RM.getInfo());
-                        System.out.println("VM " + this.toString());
-                        System.in.read();
-                    }
-                    resolveCommand(s);
-                } catch (Exception e) {
-                    e.printStackTrace();
+
+        int offX1 = 0, offX2 = 0;
+        for (int cmdBlock = 0; cmdBlock < memory.usedCODEBlocks; ++cmdBlock) {
+            String word = new String(memory.getWord(offX1, offX2).word);
+            if (word.contains("_")) {
+                word = word.replace("_", "");
+            }
+            if(word.equals("HALT")){
+                System.out.println("HALT found. HALTING...");
+            }
+            try {
+                if (RM.getMODE() == 0) {
+                    System.out.println(RM.getInfo());
+                    System.in.read();
                 }
+                resolveCommand(word);
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            offX1++;
+            offX2++;
+            if(offX2 == 16){
+                offX2 = 0;
             }
         }
     }
@@ -59,10 +62,19 @@ public class VM {
         } else if (line.substring(0, 3).equals("CMP")) {
             CMP();
         } else if (line.substring(0, 2).equals("LW")) {
-            LW(Integer.parseInt(line.substring(2, 4)) + 64);
-        } else if (line.substring(0, 2).equals("LE")) {
-            LE(Integer.parseInt(line.substring(2, 4), 16) + 64);
-        } else if (line.substring(0, 2).equals("PM")) {
+            String memLoc = line.substring(2, 4);
+            int x1 = Character.getNumericValue(memLoc.charAt(0)) + 64;
+            int x2 = Character.getNumericValue(memLoc.charAt(1));
+            LW(x1, x2/4);
+        }
+        else if (line.substring(0, 2).equals("LE"))
+        {
+            String memLoc = line.substring(2, 4);
+            int x1 = Character.getNumericValue(memLoc.charAt(0)) + 64;
+            int x2 = Character.getNumericValue(memLoc.charAt(1));
+            LE(x1,x2/4);
+        }
+        else if (line.substring(0, 2).equals("PM")) {
             PM(Integer.parseInt(line.substring(2, 4), 16) + 64);
         }
         /*else if (line.substring(0, 2).equals("LS")) {
@@ -167,32 +179,32 @@ public class VM {
     }
 
     //LWx1x2 - į registrą R1 užkrauna žodį nurodytu adresu 16 * x1 + x2.
-    public void LW(int address) {
-        int block = address / 16;
-        int offset = (address - 64) % 16;
+    public void LW(int x1, int x2) {
+        /*int block = address / 16;
+        int offset = (address - 64) % 16; */
 
         char[] word = new char[4];
         int j = 0;
-        for (int i = offset; i < offset + 4; ++i) {
-            word[j] = memory.getBlock(block)[i];
-            j++;
-        }
+
+        word = memory.getWord(x1, x2).word;
+
+
         RM.R1 = Integer.parseInt(new String(word));
         ++IC;
     }
 
     //LEx1x2 - į registrą R2 užkrauna skaičių, adresu 16 * x1 + x2.
-    public void LE(int address) {
-        int block = address / 16;
-        int offset = (address - 64) % 16;
+    public void LE(int x1, int x2) {
+        /*int block = address / 16;
+        int offset = (address - 64) % 16; */
 
         char[] word = new char[4];
         int j = 0;
-        for (int i = offset; i < offset + 4; ++i) {
-            word[j] = memory.getBlock(block)[i];
-            j++;
-        }
-        RM.R2 = Short.parseShort(new String(word));
+
+        word = memory.getWord(x1, x2).word;
+
+
+        RM.R2 = Integer.parseInt(new String(word));
         ++IC;
     }
 
@@ -202,9 +214,7 @@ public class VM {
         ++IC;
     }
 
-   /*
-    * Bendroji atminties sritis lygtais jau MOS dalis
-    *
+
     //LXx1x2 - į R1 užkrauna bendrosios atminties srities adreso 16*x1 + x2 reikšmę.
     public void LX(String address) {
         ++IC;
@@ -219,7 +229,7 @@ public class VM {
     public void LL(String address) {
         ++IC;
     }
-    */
+
 
     //LRXX- išveda į printerį XX registrą (R1 arba R2)
     public void LR(String register) {
@@ -241,7 +251,7 @@ public class VM {
         char[] word = new char[4];
         int j = 0;
         for (int i = offset; i < offset + 4; ++i) {
-            word[j] = memory.getBlock(block)[i];
+            //word[j] = memory.getBlock(block)[i];
             j++;
         }
         Printer.print(new String(word));

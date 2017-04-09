@@ -1,5 +1,7 @@
 package rm;
 
+import com.sun.istack.internal.NotNull;
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
@@ -17,7 +19,7 @@ public class HDD {
     public HDD() throws FileNotFoundException {
         file = new RandomAccessFile("HDD", "rw");
         try {
-            for (int i = 0; i < 100; ++i) {
+            for (int i = 0; i < SECTORS; ++i) {
                 file.seek(i * WORDS_PER_SECTOR * 2);
                 file.writeChars(EMPTY_SECTOR);
             }
@@ -44,17 +46,18 @@ public class HDD {
         if (sector < 0 || sector > SECTORS) {
             throw new IllegalArgumentException("Incorrect sector");
         }
+
+        char[] data = new char[WORDS_PER_SECTOR];
         try {
             file.seek(sector * WORDS_PER_SECTOR * 2);
-            char[] data = new char[WORDS_PER_SECTOR];
             for (int i = 0; i < WORDS_PER_SECTOR; ++i) {
                 data[i] = file.readChar();
             }
-            return data;
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             e.printStackTrace();
         }
-        return null;
+        return data;
     }
 
     public static boolean isEmpty(int sector) {

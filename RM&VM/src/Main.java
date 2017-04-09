@@ -1,3 +1,4 @@
+import rm.FlashMemory;
 import rm.HDD;
 import rm.RM;
 import vm.VM;
@@ -29,22 +30,27 @@ public class Main {
                 e.printStackTrace();
             }
 
-            RM.readFromUSB();
+            RM.readFromUSB("test.txt");
+            System.out.println(FlashMemory.sector);
             System.in.read();
-            RM.PD("0");
+            RM.PD(0, 0);
             System.in.read();
-            RM.moveMemory("0");
+            RM.moveMemory(0, 0);
 
         } else if (choosen == 1) {
+
             RM.setMODE((byte) 1);
             try {
                 HDD hdd = new HDD();
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             }
-            RM.readFromUSB();
-            RM.PD("0");
-            RM.moveMemory("0");
+            RM.readFromUSB("test.txt");
+            RM.readFromUSB("test.txt");
+            RM.PD(0, 0);
+            RM.sMemory.display();
+            RM.moveMemory(0, 0);
+            RM.memory.display();
         } else {
             System.out.println("EXIT. BAD NUMBER");
             System.exit(-1);

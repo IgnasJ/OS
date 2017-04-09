@@ -6,30 +6,33 @@ import java.io.IOException;
 
 public class FlashMemory {
 
+    public static int sector = 0;
+
     public static void readToHDD(String sourceFile) {
-        try(FileReader fr = new FileReader(sourceFile);
-            BufferedReader br = new BufferedReader(fr)){
+        try (FileReader fr = new FileReader(sourceFile);
+             BufferedReader br = new BufferedReader(fr)) {
 
-            String line = "";
+            StringBuilder line = new StringBuilder();
             int c;
-            int sector = 0;
 
-            while((c = br.read()) != -1){
-                if(line.length() == 16){
-                    HDD.write(line.toCharArray(), sector);
+            while ((c = br.read()) != -1) {
+                if (line.length() == 16) {
+                    HDD.write(line.toString().toCharArray(), sector);
                     sector++;
-                    line = "";
+                    line = new StringBuilder();
                 }
                 //ignoruojam siuksles
-                if(c != 10 && c != 13){
-                    line+= (char)c;
+                if (c != 10 && c != 13) {
+                    line.append((char) c);
                 }
             }
-            HDD.write(line.toCharArray(), sector);
-        }
-        catch (IOException e) {
+            if (!line.toString().equals("")) {
+                HDD.write(line.toString().toCharArray(), sector);
+                sector++;
+            }
+        } catch (IOException e) {
             e.printStackTrace();
         }
-        System.out.println("Red from FLASH to HDD.");
+        System.out.println("Read from FLASH to HDD.");
     }
 }

@@ -249,9 +249,9 @@ public class RM {
     }
 
     //reads from flash memory to HDD
-    public static void readFromUSB() {
+    public static void readFromUSB(String filename) {
         setCH1((byte) 1);
-        FlashMemory.readToHDD("test.txt");
+        FlashMemory.readToHDD(filename);
         setCH1((byte) 0);
     }
 
@@ -269,14 +269,23 @@ public class RM {
     }
 
     //PDx - SI tampa 1 ir valdymas perduodamas OS, duomenų kopijavimui iš kietojo disko į supervizorinės atminties vietą x.
-    public static void PD(String address) {
+    public static void PD(int offX1, int offX2) {
         setSI((byte) 1);
         setCH3((byte) 1);
 
-        int block = Integer.parseInt(address);
         for (int i = 0; i < HDD.usedSectors.size(); ++i) {
-            sMemory.writeBlock(HDD.read(HDD.usedSectors.get(i)), block);
-            block++;
+            String hddSector = new String(HDD.read(HDD.usedSectors.get(i)));
+            String[] blockString = hddSector.split("(?<=\\G....)");
+            for (String s : blockString) {
+                if (!s.equals("    ")) {
+                    sMemory.writeBlock(s.toCharArray(), offX1, offX2);
+                    offX2 += 1;
+                    if (offX2 % 16 == 0) {
+                        offX2 = 0;
+                    }
+                    offX1 += 1;
+                }
+            }
         }
         setCH3((byte) 0);
         setSI((byte) 0);
@@ -284,10 +293,12 @@ public class RM {
     }
 
     //Perkelia duomenis is supervizorines atminties i pagrindine
-    public static void moveMemory(String address) {
+    public static int moveMemory(int x1, int x2) {
         System.out.println("move memory from supervisor to main memory");
         boolean dataSeg = false;
         boolean codeSeg = false;
+
+        int programCount = 0;
 
         int codeOffset = 64;
         int currCodePos = 0;
@@ -295,35 +306,52 @@ public class RM {
         int commandOffset = 0;
         int currCommandPos = 0;
 
-        for (Integer bID : sMemory.usedBlocks) {
-            char[] block = sMemory.getBlock(bID);
-            //Splitting every 4 'bytes'
-            String[] blockString = new String(block).split("(?<=\\G....)");
-            for (String s : blockString) {
-                if (s.equals("DATA") && !dataSeg) {
-                    dataSeg = true;
-                }
-                if (s.equals("CODE")) {
-                    codeSeg = true;
-                }
-                if (!codeSeg && !s.equals("DATA")) {
-                    memory.writeBlockOffset(s.toCharArray(), codeOffset, currCodePos);
-                    currCodePos += 4;
-                    codeOffset += 4;
-                    if (currCodePos == 16) {
-                        currCodePos = 0;
-                    }
-                }
-                if (codeSeg && !s.equals("CODE")) {
-                    memory.writeBlockOffset(s.toCharArray(), commandOffset, currCommandPos);
-                    currCommandPos += 4;
-                    commandOffset += 4;
-                    if (currCommandPos == 16) {
-                        currCommandPos = 0;
-                    }
+        int offX1 = x1;
+        int offX2 = x2;
+
+        for (int i = 0; i < sMemory.offset; i++) {
+            String word = sMemory.getWord(offX1, offX2).toString();
+
+            if (word.equals("DATA") && !dataSeg) {
+                dataSeg = true;
+            }
+            if (word.equals("CODE") && !codeSeg) {
+                codeSeg = true;
+                dataSeg = false;
+            }
+            if (!codeSeg && !word.equals("DATA") && dataSeg) {
+                memory.writeBlock(word.toCharArray(), codeOffset, currCodePos);
+                memory.usedDATABlocks++;
+                currCodePos += 1;
+                codeOffset += 1;
+                if (currCodePos == 16) {
+                    currCodePos = 0;
                 }
             }
+            if (codeSeg && !word.equals("CODE")) {
+
+                if (word.equals("HALT")) {
+                    programCount++;
+                    codeSeg = false;
+                    dataSeg = false;
+                }
+
+                memory.writeBlock(word.toCharArray(), commandOffset, currCommandPos);
+                memory.usedCODEBlocks++;
+                currCommandPos += 1;
+                commandOffset += 1;
+                if (currCommandPos == 16) {
+                    currCommandPos = 0;
+                }
+            }
+
+            offX2 += 1;
+            if (offX2 % 16 == 0) {
+                offX2 = 0;
+            }
+            offX1 += 1;
         }
+        return programCount;
     }
 
     //GDx - SI tampa 2 ir valdymas perduodamas OS, duomenų kopijavimui į kietąjį diską iš supervizorinės atminties vietos x.
@@ -336,7 +364,7 @@ public class RM {
         setSI((byte) 0);
     }
 
-//    @Override
+    //    @Override
     public static String getInfo() {
         return "+------------------+" + '\n' +
                 "|       RM         |" + '\n' +
