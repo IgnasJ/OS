@@ -41,7 +41,7 @@ Procesų būsenos:
 
 Diagrama, vaizduojanti, kaip procesas gali pakliūti i tam tikrą būseną ir iš jos išeiti:
 
-\includegraphics{processDiagram.png}
+\includegraphics{img/processDiagram.png}
 
 	\begin{itemize}
 		\item Vykdomas procesas blokuojasi jam prašant ir negavus resurso.
@@ -70,7 +70,7 @@ Kuo aukščiau yra procesas, tuo daugiau jis turi galimybių tapti vykdomu (jei 
 
 Diagrama, vaizduojanti planuotojo veiksmų seką:
 
-\includegraphics{processPlanner.png}
+\includegraphics{img/processPlanner.png}
 
 \subsubsection{Procesų primityvai}
 Procesų primityvų paskirtis - pateikti vienodą ir paprastą vartotojo sąsają darbui su procesais. Kiekvieno primityvo programos gale yra kviečiamas planuotojas. Yra 4 primityvai:
@@ -85,6 +85,19 @@ Procesų primityvų paskirtis - pateikti vienodą ir paprastą vartotojo sąsaj�
 
 \subsection{Resursai}
 Resursas yra tai, dėl ko varžosi procesai. Dėl resursų trūkumo procesai blokuojasi, gavę reikiamą resursą tampa pasiruošusiais. 
+
+\subsubsection{Resursų deskriptoriai}
+\begin{itemize}
+	\item RId  – resurso vidinis vardas
+	\item RidI – resurso išorinis vardas.
+	\item RCreator – nuoroda į procesą sukūrusį šį resursą
+	\item RElements – nuoroda i resurso elementu sąrašą
+	\item RWaitingProc – nuoroda i resurso laukiančių procesų sąrašą
+	\item RWaitingCount – nuoroda i šio resurso laukiančių procesų paprašytų resurso kiekių sąrašą
+	\item RLinkList – nuoroda į visų resursų sąrašą
+	\item RWaitingProcPoint – nuoroda į šio resurso laukiančių procesų resurso elemento rodyklių sąrašą
+	\item RTxt – resurso požymis
+\end{itemize}
 
 \subsubsection{Resurso primityvai}
 	\begin{itemize}
@@ -118,6 +131,9 @@ Visi procesai, išskyrus VirtualMachine (šį procesą sukuria JobGovernor) ir J
 
 \subsubsection{Procesas StartStop}
 Šis procesas atsakingas už sistemos darbo pradžią ir pabaigą. Įjungus komputerį (paleidus MOS modelį), šis procesas pasileidžia automatiškai. Šio proceso paskirtis, sisteminių procesų bei resursų kūrimas.
+
+\includegraphics{img/StartStop.png}
+
 	\begin{itemize}
 		\item Procesas, gavęs procesorių, savo darbą pradeda sukurdamas visus sisteminius resursus (1). 
 		\item Sukūręs resursus, procesas kuria nuolatinius procesus (2), t.y. tokius procesus, kurie bus aktyvūs visą MOS gyvavimo laiką (visi, išskyrus JobGovernor ir VirtualMachine).
@@ -127,6 +143,9 @@ Visi procesai, išskyrus VirtualMachine (šį procesą sukuria JobGovernor) ir J
 	\end{itemize}
 \subsubsection{Procesas ReadFromKey}
 Šį procesą kuria ir naikina procesas StartStop. Šio proceso paskirtis – gavus informaciją iš įvedimo srauto, atiduoti informaciją tolesniam apdorojimui, kurį atliks procesas MainProc.
+
+\includegraphics{img/ReadFromKey.png}
+
 	\begin{itemize}
 		\item Pirmasis žingsnis – laukti įvedimo srauto (1).  Įvedimo srautu ateina programos tekstas.
 		\item Programos teksto nuskaitymas (2).
@@ -137,6 +156,9 @@ Visi procesai, išskyrus VirtualMachine (šį procesą sukuria JobGovernor) ir J
 	\end{itemize}
 \subsubsection{Procesas MainProc}
 Šio proceso paskirtis – kurti ir naikinti procesus JobGovernor.
+
+\includegraphics{img/MainProc.png}
+
 	\begin{itemize}
 		\item Procesas prašo užduoties („Užduotis supervizorinėje atmintyje“ resursas, kurį atlaisvina procesas ReadFromKey), kurią reikia įvykdyti (1).
 		\item Tikrinama, ar resurso komponentė „Vykdyti“ lygi 0, t.y. ar užduotis jau baigta vykdyti.
@@ -145,6 +167,9 @@ Visi procesai, išskyrus VirtualMachine (šį procesą sukuria JobGovernor) ir J
 	\end{itemize}
 \subsubsection{Procesas JobGovernor}
 Procesus JobGovernor kuria procesas MainProc. Šių procesų paskirtis – padėti procesui VirtualMachine atlikti savo darbą (atlikti veiksmus, kurių virtuali mašina procesoriui dirbant vartotojo režimu nesugeba atlikti).
+
+\includegraphics{img/JobGovernor.jpg}
+
 	\begin{itemize}
 		\item Procesas prašo vartotojo atminties, kad galėtų patalpinti vartotojo užduoties programą. Sukuriama puslapių lentelė ir užpildoma išskirtos vartotojo atminties adresais. Perkėlus vartotojo užduoties programą į vartotojo atmintį, programa pašalinama iš supervizorinės atminties (1, 2, 3, 4). 
 		\item Kuriama virtuali mašina, t.y. procesas VirtualMachine (5).
@@ -156,12 +181,18 @@ Procesus JobGovernor kuria procesas MainProc. Šių procesų paskirtis – padė
 	\end{itemize}
 \subsubsection{Procesas VirtualMachine}
 Procesą kuria ir naikina procesas JobGovernor. Proceso VirtualMachine paskirtis yra vykdyti vartotojo užduoties programą. Šių procesų yra tiek, kiek yra procesų JobGovernor.
+
+\includegraphics{img/VirtualMachine.png}
+
 	\begin{itemize}
 		\item Interpretuojama programa, kol neįvyksta pertraukimas (1).
 		\item Įvykus pertraukimui, virtuali mašina išsaugo savo procesoriaus būseną, valdymas perduodamas pertraukimą apdorosiančioms programoms. Kuriamas resursas „Pertraukimas“ skirtas procesui Interrupt, kuris indentifikuos pertraukimą ir perduos informaciją procesui JobGovernor (2), ir laukiama leidimo tęsti vykdymą (pranešimo apie įvykdytą veiksmą iš įvedimo/išvedimo procesų).
 	\end{itemize}
 \subsubsection{Procesas Interrupt}
 Procesą Interrupt kuria ir naikina procesas StartStop. Šio proceso paskirtis – reaguoti į pertraukimus, kilusius virtualios mašinos darbo metu. 
+
+\includegraphics{img/Interrupt.png}
+
 	\begin{itemize}
 		\item Procesas Interrupt savo darbo pradžioje laukia „Pertraukimas“ resurso, kurį siunčia procesas VirtualMachine (1).
 		\item  Procesas nustato pertraukimo tipą apklausinėdamas pertraukimo programų nustatytas sisteminių kintamųjų reikšmes (2).
@@ -175,6 +206,9 @@ Procesą PrintLine kuria ir naikina procesas StartStop. Šio proceso paskirtis �
 Procesą GetLine kuria ir naikina procesas StartStop. Šio proceso paskirtis – iš įvedimo srauto nuskaityti duomenis. 
 
 \subsubsection{Procesas Memory Governor}
+
+\includegraphics{img/MemoryGovernor.png}
+
 MemoryGovernor - procesas valdantis bendrąją atmintį. Norint naudotis bendra atmintimi, reikia kreiptis į GenMemory procesą ir laukti atsakymo ar galima naudotis prašomu bendros atminties bloku.
 \subsection{Samaforai}
 
@@ -187,17 +221,4 @@ Semaforas S tai sveikas neneigiamas skaičius, su kuriuo atliekamos operacijos P
 	\item Jei keletas procesų vienu metu iškviečia V(S) ir/ar P(S) su vienu semaforu, tai užklausimai vykdomi nuosekliai, kokia nors iš anksto nežinoma tvarka.
 	\item Jei keletas procesų laukia operacijos P(S) įvykdymo, S – ta pats, tai reikšmei tapus teigiamai (kai kažkuris procesas įvykdė operaciją V(S)), kažkuris iš laukiančių procesų bus pradėtas vykdyti.
 Pagal prasmę operacija P atitinka perėjimo išškvietimą, o V – kito proceso aktyvaciją.
-\end{itemize}
-
-\subsubsection{Resursų deskriptoriai}
-\begin{itemize}
-	\item RId  – resurso vidinis vardas
-	\item RidI – resurso išorinis vardas.
-	\item RCreator – nuoroda į procesą sukūrusį šį resursą
-	\item RElements – nuoroda i resurso elementu sąrašą
-	\item RWaitingProc – nuoroda i resurso laukiančių procesų sąrašą
-	\item RWaitingCount – nuoroda i šio resurso laukiančių procesų paprašytų resurso kiekių sąrašą
-	\item RLinkList – nuoroda į visų resursų sąrašą
-	\item RWaitingProcPoint – nuoroda į šio resurso laukiančių procesų resurso elemento rodyklių sąrašą
-	\item RTxt – resurso požymis
 \end{itemize}
