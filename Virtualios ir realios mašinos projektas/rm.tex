@@ -71,17 +71,7 @@ TI registro rekšmė yra nustatoma tam tikrai reikšmei M. Įvykdžius eilinę i
 Kai TI reikšmė tampa 0, mikrokomanda aptinka taimerio pertraukimą.
 
 
-  \item[Semaforas] \leavevmode \\
-Semaforas S tai sveikas neneigiamas skaičius, su kuriuo atliekamos operacijos P(S) ir V(S), kur P ir V nauji primityvai. Operacijos pasižymi savybėmis:
-\begin{itemize}
-\item P(S), V(S) – nedalomos operacijos, t.y. jų valdymo negalima pertraukti ir jų vykdymo metu negalima kreiptis į semaforą S;
-\item V(S):     S:S+1; (didinama semaforo reikšmė)
-\item P(S):      S:S-1; (sumažinama jei S>0)
-\item Jei S=0, tai procesas P, kuris vykdo operaciją P(S), laukia, kol sumažinimas vienetu bus galimas. Šiuo atvėju P(S) yra pertraukiamas
-\item Jei keletas procesų vienu metu iškviečia V(S) ir/ar P(S) su vienu semaforu, tai užklausimai vykdomi nuosekliai, kokia nors iš anksto nežinoma tvarka.
-\item Jei keletas procesų laukia operacijos P(S) įvykdymo, S – ta pats, tai reikšmei tapus teigiamai (kai kažkuris procesas įvykdė operaciją V(S)), kažkuris iš laukiančių procesų bus pradėtas vykdyti.
-Pagal prasmę operacija P atitinka perėjimo išškvietimą, o V – kito proceso aktyvaciją.
-\end{itemize}
+ 
 
 \end{description}
 

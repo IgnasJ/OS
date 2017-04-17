@@ -88,17 +88,16 @@ Resursas yra tai, dėl ko varžosi procesai. Dėl resursų trūkumo procesai blo
 
 \subsubsection{Resurso primityvai}
 	\begin{itemize}
-		\item Kurti resursą
-		\item Naikinti resursą
-		\item Prašyti resurso
-		\item Atlaisvinti resursą
+		\item Kurti resursą \\ Resursus kuria tik procesas. Resurso kūrimo metu perduodami kaip parametrai: nuoroda į proceso kūrėją, resurso išorinis vardas. Resursas kūrimo metu yra: pridedamas prie bendro resursų sąrašo, pridedamas prie tėvo suskurtų resursų sąrašo, jam priskiriamas unikalus vidinis vardas, sukuriamas resurso elementų sąrašas ir sukuriamas laukiančių procesų sąrašas.
+		\item Naikinti resursą \\ Resurso deskriptorius išmetamas iš jo tėvo sukurtų resursų sąrašo, naikinamas jo elementų sąrašas, atblokuojami procesai, laukiantys šio resurso, išmetamas iš bendro resursų sąrašo, ir, galiausiai naikinamas pats deskriptorius. 
+		\item Prašyti resurso \\Šį primityvą kartu su primityvu “atlaisvinti resursą” procesai naudoja labai dažnai. Procesas, iškvietęs šį primityvą, yra užblokuojamas ir įtraukiamas į to resurso laukiančių procesų sąrašą. Sekantis šio primityvo žingsnis yra kviesti resurso paskirstytoją.
+		\item Atlaisvinti resursą \\Šį primityvą kviečia procesas, kuris nori atlaisvinti jam nereikalingą resursą arba tiesiog perduoti pranešimą ar informaciją kitam procesui. Resurso elementas, primityvui perduotas kaip funkcijos parametras, yra pridedamas prie resurso elementų sąrašo. Šio primityvo pabaigoje yra kviečiamas resursų paskirstytojas.
 	\end{itemize}
 
 \subsubsection{Resurso paskirstytojas}
 Kaip kad procesorius yra skirstomas planuotojo, kiekvienas resursas taipogi yra skirstomas tarn tikro paskirstytojo. Prašydamas resurso ar norėdamas jį atlaisvinti, procesas kreipiasi į atitinkama. resursų paskirstytojo kuris privalo jį aptarnauti.
 Resursų paskirstytojo paskirtis - suteikti paprašyta. resurso elementų kiekį procesui. Resursų paskirstytojo algoritmas gali būti sudėtingas. Pavyzdžiui, turi būti numatyta galimybė atiduoti resurso elementą konkrečiam procesui, arba prašyti kelių resurso elementų. Resurso paskirstytojas peržvelgia visus laukiančius šio resurso procesų sajašą, ir, sutikęs galimybę aptarnauti process perduoda jam reikalingus resurso elementus ir pažymi jį pasiruošusiu. Paskirstytojo pabaigoje yra iškviečiamas planuotojas.
 
-\subsubsection{Vartotojo užduoties būsenos kitimas sistemoje}
 
 \subsubsection{Bazinių procesų paketas}
 Mūsų modelyje bus naudojami šie procesai:
@@ -118,28 +117,87 @@ Visi procesai, išskyrus VirtualMachine (šį procesą sukuria JobGovernor) ir J
 \subsection{Procesų aprašai}
 
 \subsubsection{Procesas StartStop}
-
+Šis procesas atsakingas už sistemos darbo pradžią ir pabaigą. Įjungus komputerį (paleidus MOS modelį), šis procesas pasileidžia automatiškai. Šio proceso paskirtis, sisteminių procesų bei resursų kūrimas.
+	\begin{itemize}
+		\item Procesas, gavęs procesorių, savo darbą pradeda sukurdamas visus sisteminius resursus (1). 
+		\item Sukūręs resursus, procesas kuria nuolatinius procesus (2), t.y. tokius procesus, kurie bus aktyvūs visą MOS gyvavimo laiką (visi, išskyrus JobGovernor ir VirtualMachine).
+		\item Prašo resurso „MOS pabaiga“ (3), t.y. šioje vietoje procesas blokuojasi ir laukia, kol bus atlaisvintas pranešimas apie MOS darbo pabaigą. Priklausomai nuo prioriteto šis procesas bus atblokuotas ir tęs darbą.
+		\item Visų sisteminių procesų naikinimas (4). 
+		\item Sisteminių resursų naikinimas (5). MOS darbo pabaiga.
+	\end{itemize}
 \subsubsection{Procesas ReadFromKey}
-
+Šį procesą kuria ir naikina procesas StartStop. Šio proceso paskirtis – gavus informaciją iš įvedimo srauto, atiduoti informaciją tolesniam apdorojimui, kurį atliks procesas MainProc.
+	\begin{itemize}
+		\item Pirmasis žingsnis – laukti įvedimo srauto (1).  Įvedimo srautu ateina programos tekstas.
+		\item Programos teksto nuskaitymas (2).
+		\item Prašome resurso „Supervizorinės atminties dalis iš 100 žodžių“ (3) ir kopijuojame eilutes į supervizorinę atmintį (4).
+		\item Atlaisviname resursą „Supervizorinės atminties dalis iš 100 žodžių“ (5).
+		\item Sukuriamas ir atlaisvinamas resursas, skirtas procesui MainProc, su komponente „Vykdyti“, lygia 1. (6). 
+		\item Proceso programa yra ciklinė, todėl ReadFromKey vėl užsiblokuoja laukdamas.
+	\end{itemize}
 \subsubsection{Procesas MainProc}
-
+Šio proceso paskirtis – kurti ir naikinti procesus JobGovernor.
+	\begin{itemize}
+		\item Procesas prašo užduoties („Užduotis supervizorinėje atmintyje“ resursas, kurį atlaisvina procesas ReadFromKey), kurią reikia įvykdyti (1).
+		\item Tikrinama, ar resurso komponentė „Vykdyti“ lygi 0, t.y. ar užduotis jau baigta vykdyti.
+		\item Jei Vykdyti nelygus nuliui, kuriamas procesas „JobGovernor“, priešingu atveju naikinamas procesas „JobGovernor“. (2, 3).
+		\item Atlikęs savo darbą, procesas MainProc vėl blokuojasi laukdamas resurso (1).
+	\end{itemize}
 \subsubsection{Procesas JobGovernor}
-
+Procesus JobGovernor kuria procesas MainProc. Šių procesų paskirtis – padėti procesui VirtualMachine atlikti savo darbą (atlikti veiksmus, kurių virtuali mašina procesoriui dirbant vartotojo režimu nesugeba atlikti).
+	\begin{itemize}
+		\item Procesas prašo vartotojo atminties, kad galėtų patalpinti vartotojo užduoties programą. Sukuriama puslapių lentelė ir užpildoma išskirtos vartotojo atminties adresais. Perkėlus vartotojo užduoties programą į vartotojo atmintį, programa pašalinama iš supervizorinės atminties (1, 2, 3, 4). 
+		\item Kuriama virtuali mašina, t.y. procesas VirtualMachine (5).
+		\item Procesas JobGovernor blokuojasi ir laukia pertraukimo proceso VirtualMachine vykdymo metu (6).
+		\item Gavus pranešimą apie pertraukimą (pertraukimai gali kilti, kai TI=0 arba vykdomos komandos GET, PUT, HALT), tikrinama, ar tai įvedimo/išvedimo pertraukimas (7).
+		\item Jei tai nėra įvedimo/išvedimo pertraukimas, naikinamas procesas VirtualMachine, atlaisvinama virtualios mašinos užimta vartotojo atmintis. Sukuriamas resursas „Blokas atmintyje“ užduoties vykdymo statistikai išvesti. Kuriamas ir atlaisvinamas fiktyvus resursas „Užduotis superv. atmintyje“ su komponente Vykdyti = 0, skirtas procesui MainProc (tai požymis, kad šis JobGovernor baigė savo darbą ir turi būti sunaikintas). Kol šis JobGovernor procesas nėra sunaikintas (nors jau baigė darbą), jis blokuojasi laukdamas „Neegzistuojantis“ resurso. Kadangi šio resurso jis negaus, procesas blokuosis, kol bus galiausiai sunaikintas.
+		\item Jei tai GET pertraukimas, sukuriamas resursas „Laukti vartotojo įvedimo“ (skirtas procesui GetLine), su komponente, nurodančia, kur rašyti duomenis ir kokiam procesui „VirtualMachine“ sukurti pranešimą apie baigtą procesą.
+		\item Jei tai PUT pertraukimas, sukuriamas resursas „Blokas atmintyje“ su komponente, nurodančia, kur rašyti duomenis ir kokiam procesui „VirtualMachine“ sukurti pranešimą apie baigtą procesą.
+	\end{itemize}
 \subsubsection{Procesas VirtualMachine}
-
+Procesą kuria ir naikina procesas JobGovernor. Proceso VirtualMachine paskirtis yra vykdyti vartotojo užduoties programą. Šių procesų yra tiek, kiek yra procesų JobGovernor.
+	\begin{itemize}
+		\item Interpretuojama programa, kol neįvyksta pertraukimas (1).
+		\item Įvykus pertraukimui, virtuali mašina išsaugo savo procesoriaus būseną, valdymas perduodamas pertraukimą apdorosiančioms programoms. Kuriamas resursas „Pertraukimas“ skirtas procesui Interrupt, kuris indentifikuos pertraukimą ir perduos informaciją procesui JobGovernor (2), ir laukiama leidimo tęsti vykdymą (pranešimo apie įvykdytą veiksmą iš įvedimo/išvedimo procesų).
+	\end{itemize}
 \subsubsection{Procesas Interrupt}
-
+Procesą Interrupt kuria ir naikina procesas StartStop. Šio proceso paskirtis – reaguoti į pertraukimus, kilusius virtualios mašinos darbo metu. 
+	\begin{itemize}
+		\item Procesas Interrupt savo darbo pradžioje laukia „Pertraukimas“ resurso, kurį siunčia procesas VirtualMachine (1).
+		\item  Procesas nustato pertraukimo tipą apklausinėdamas pertraukimo programų nustatytas sisteminių kintamųjų reikšmes (2).
+		\item Toliau procesas cikliškai blokuojasi vėl laukdamas „Pertraukimas“ resurso. Kiekviena virtuali mašina kūrimo metu laiko savo tėvo JobGovernor identifikatorių. Kartu su pranešimu apie pertraukimą yra perduodamas ir tas identifikatorius, kurį Interrupt naudoja jam reikalingo JobGovernor atskyrimui iš kitų (3).
+		\item Galiausiai yra kuriamas ir atlaisvinamas „IšInterrupt“ resursas, kuris yra skirtas nustatytajam JobGovernor procesui (4). 
+	\end{itemize}
 \subsubsection{Procesas PrintLine}
-
+Procesą PrintLine kuria ir naikina procesas StartStop. Šio proceso paskirtis – į išvedimo srautą pasiųsti pranešimą
+	
 \subsubsection{Procesas GetLine}
+Procesą GetLine kuria ir naikina procesas StartStop. Šio proceso paskirtis – iš įvedimo srauto nuskaityti duomenis. 
 
 \subsubsection{Procesas Memory Governor}
-
+MemoryGovernor - procesas valdantis bendrąją atmintį. Norint naudotis bendra atmintimi, reikia kreiptis į GenMemory procesą ir laukti atsakymo ar galima naudotis prašomu bendros atminties bloku.
 \subsection{Samaforai}
-Samaforai aprašyti prie RM.
 
-\subsection{Deskriptoriai}
-
-\subsubsection{Procesų deskriptoriai}
+Semaforas S tai sveikas neneigiamas skaičius, su kuriuo atliekamos operacijos P(S) ir V(S), kur P ir V nauji primityvai. Operacijos pasižymi savybėmis:
+\begin{itemize}
+	\item P(S), V(S) – nedalomos operacijos, t.y. jų valdymo negalima pertraukti ir jų vykdymo metu negalima kreiptis į semaforą S;
+	\item V(S):     S:S+1; (didinama semaforo reikšmė)
+	\item P(S):      S:S-1; (sumažinama jei S>0)
+	\item Jei S=0, tai procesas P, kuris vykdo operaciją P(S), laukia, kol sumažinimas vienetu bus galimas. Šiuo atvėju P(S) yra pertraukiamas
+	\item Jei keletas procesų vienu metu iškviečia V(S) ir/ar P(S) su vienu semaforu, tai užklausimai vykdomi nuosekliai, kokia nors iš anksto nežinoma tvarka.
+	\item Jei keletas procesų laukia operacijos P(S) įvykdymo, S – ta pats, tai reikšmei tapus teigiamai (kai kažkuris procesas įvykdė operaciją V(S)), kažkuris iš laukiančių procesų bus pradėtas vykdyti.
+Pagal prasmę operacija P atitinka perėjimo išškvietimą, o V – kito proceso aktyvaciją.
+\end{itemize}
 
 \subsubsection{Resursų deskriptoriai}
+\begin{itemize}
+	\item RId  – resurso vidinis vardas
+	\item RidI – resurso išorinis vardas.
+	\item RCreator – nuoroda į procesą sukūrusį šį resursą
+	\item RElements – nuoroda i resurso elementu sąrašą
+	\item RWaitingProc – nuoroda i resurso laukiančių procesų sąrašą
+	\item RWaitingCount – nuoroda i šio resurso laukiančių procesų paprašytų resurso kiekių sąrašą
+	\item RLinkList – nuoroda į visų resursų sąrašą
+	\item RWaitingProcPoint – nuoroda į šio resurso laukiančių procesų resurso elemento rodyklių sąrašą
+	\item RTxt – resurso požymis
+\end{itemize}

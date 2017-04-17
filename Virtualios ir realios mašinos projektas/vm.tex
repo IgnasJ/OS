@@ -92,25 +92,31 @@ Darbui su kietuoju disku yra skirtos komandos PD ir GD
 \subsection{Virtualios mašinos interpretuojamojo vykdomojo failo išeities 
 teksto formatas}
 
-Užduoties kodas yra surašomas faile. Visame faile rašant tik vykdymui reikalingas
-komandas. Paskutinė vykdoma komanda privalo būti HALT. Kitu atveju virtualios mašinos darbo
+Užduoties kodas yra surašomas faile. Paskutinė vykdoma komanda privalo būti HALT. Kitu atveju virtualios mašinos darbo
 rezultatai nėra apibrėžti.
-DR X - išskiriamas vienas žodis ir jį talpinama nurodyta reikšmė.
 
 Bendra programos schema:\\
-\\\textbf{START}\\
+\textbf{DATA}\\
+<duomenys>\\
+\textbf{CODE}\\
 <komandos>\\
 \textbf{HALT}\\
 \\
 Kodo pavyzdys:\\
-\\\textbf{START}\\
-DR ATSA\\
-DR KYMA\\
-DR S:  \\
-
-
-<komandos>\\
-\textbf{HALT}
+\\\textbf{DATA}\\
+0001\\
+0005\\
+0010\\
+ATS:\\
+\textbf{CODE}\\
+LW00\\
+LE04\\
+SUB \\
+LE08\\
+ADD \\
+LRR1\\
+\textbf{HALT}\\
+\\
 
 \subsection{Modeliuojamos virtualios mašinos loginių komponentų sąryšio su 
 realios mašinos techninės įrangos komponentais aprašymas}
