@@ -1,5 +1,7 @@
 package core;
 
+import processes.StartStop;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.PriorityQueue;
@@ -20,14 +22,49 @@ public class Kernel {
     private static Kernel kernel;
 
     public void start(){
+        System.out.println("Starting kernel");
+        Process startStop = new StartStop();
+        this.createProcess(null, startStop);
+        planner();
+    }
 
+    public void run(){
+        Process p = this.getCurrentProcess();
+        if(p == null){
+            System.out.println("No processes are running");
+        }
+        else{
+            p.run();
+        }
     }
 
     public void createProcess(Process parent, Process createdProc){
-
+        System.out.println("Creating process: " + createdProc.pID + " ...");
+        this.allProcesses.add(createdProc);
+        this.readyProcesses.add(createdProc);
+        createdProc.setState(ProcState.READY);
+        if(parent != null){
+            parent.addChild(createdProc);
+            createdProc.setParent(parent);
+        }
+        System.out.println("Finished creating process: " + createdProc.pID);
     }
 
     public void destroyProcess(Process p){
+        System.out.println("Destroying process: " + p.pID + " ...");
+        if(p.getParent() != null){
+            p.getParent().removeChild(p);
+        }
+
+        p.destroyChildren();
+        p.releaseResources();
+        p.destroyResources();
+
+        allProcesses.remove(p);
+        readyProcesses.remove(p);
+        blockedProcesses.remove(p);
+
+        System.out.println("Finished destroying process: " + p.pID);
 
     }
 
@@ -48,11 +85,20 @@ public class Kernel {
     }
 
     public void deleteResource(Process process, Resource resource){
-
+        System.out.println("Deleting resource: " + resource.getrIDI() + " from process: " + process.getExternalName() + " ...");
+        this.resources.remove(resource);
+        process.removeCreatedResource(resource);
     }
 
     public void freeResource(Process process, Resource resource){
-
+        System.out.println("Freeing resource: " + resource.getrIDI() + " ...");
+        Resource r = this.getResource(resource.getrIDI());
+        if(r != null){
+            process.releaseResource(resource);
+            //???
+            planner();
+        }
+        System.out.println("Finished freeing resource: " + resource.getrIDI());
     }
 
     public void requestResource(Process askingProc, String resExtName){
@@ -72,7 +118,38 @@ public class Kernel {
     }
 
     public void planner(){
+        Process firstReady = this.readyProcesses.peek();
+        Process current = this.getCurrentProcess();
 
+        if(current != null && current.getState() != ProcState.RUNNING){
+            this.blockedProcesses.add(current);
+            this.currentProcess = null;
+            current = null;
+        }
+        if(current == null){
+            if(firstReady == null){
+                System.out.println("All processes are blocked");
+            }
+            else{
+                System.out.println("Planner changing process");
+                firstReady = this.readyProcesses.poll();
+                firstReady.setState(ProcState.RUNNING);
+                this.runProcess(firstReady);
+            }
+        }
+        else{
+            if(firstReady == null){
+                System.out.println("No other ready processes, starting current one");
+            }
+            else if(firstReady.priority > current.priority){
+                System.out.println("Current process has lower priority");
+                firstReady = this.readyProcesses.poll();
+                firstReady.setState(ProcState.RUNNING);
+                this.runProcess(firstReady);
+                current.setState(ProcState.READY);
+                this.readyProcesses.add(current);
+            }
+        }
     }
 
     public static Kernel getInstance(){

@@ -1,6 +1,16 @@
 package rm;
 
+import core.Kernel;
+import vm.VM;
+
+import java.io.IOException;
+
 public class RM {
+
+    public static RM rm;
+    public VM vm;
+
+    private Kernel kernel;
 
     public static int R1;
     public static int R2;
@@ -28,11 +38,57 @@ public class RM {
         System.out.println("RM init.");
     }
 
-    /*
-        getCommand(int IC){
-            memory[nuo_to_bloko_kuris skirtas programos kodui]
+    public static RM getInstance(){
+        if(rm == null){
+            rm = new RM();
         }
-    */
+        return rm;
+    }
+
+
+    public void loadOS() throws IOException {
+        this.kernel = Kernel.getInstance();
+        this.kernel.start();
+        this.vm = new VM();
+
+       /* try {
+            HDD hdd = new HDD();
+        }
+        catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        RM.readFromUSB("test.txt");
+        System.out.println(FlashMemory.sector);
+        RM.PD(0, 0);
+        RM.moveMemory(0, 0); */
+    }
+
+    public void run() throws IOException {
+       /* Scanner keyboard = new Scanner(System.in);
+        System.out.println("Enter MODE:");
+        System.out.println("0. Supervisor mode");
+        System.out.println("1. User mode");
+
+        int choosen = keyboard.nextInt();
+
+        if (choosen == 0) {
+            RM.setMODE((byte)0);
+
+        }
+        else if (choosen == 1) {
+            RM.setMODE((byte) 1);
+        }
+        else {
+            System.out.println("EXIT. BAD NUMBER");
+            System.exit(-1);
+        }
+        vm.processCommands(); */
+       this.kernel.start();
+       this.kernel.run();
+    }
+
+
     public static void setZF() {
         C |= (1 << 6);
     }
@@ -369,21 +425,12 @@ public class RM {
         return "+------------------+" + '\n' +
                 "|       RM         |" + '\n' +
                 "+------------------+" + '\n' +
-                "R1: " + R1 + '\n' +
-                "R2: " + R2 + '\n' +
-                "CH1: " + getCH1() + '\n' +
-                "CH2: " + getCH2() + '\n' +
-                "CH3: " + getCH3() + '\n' +
-                "PI: " + getPI() + '\n' +
-                "SI: " + getSI() + '\n' +
-                "TI: " + getTI() + '\n' +
-                "IOI: " + getIOI() + '\n' +
-                "IC: " + getIC() + '\n' +
-                "MODE: " + getMODE() + '\n' +
-                "ZF: " + getZF() + '\n' +
-                "SF: " + getSF() + '\n' +
-                "OF: " + getOF() + '\n' +
-                "+------------------+";
 
+                "R1: " + R1 + " R2: " + R2 + '\n' +
+                "CH1: " + getCH1() + " CH2: " + getCH2() + " CH3: " + getCH3() + '\n' +
+                "PI: " + getPI() + " SI: " + getSI() + " TI: " + getTI() + '\n' +
+                "IOI: " + getIOI() + " IC: " + getIC() + " MODE: " + getMODE() + '\n' +
+                "ZF: " + getZF() + " SF: " + getSF() + " OF: " + getOF() + '\n' +
+                "+------------------+";
     }
 }

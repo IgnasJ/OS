@@ -1,7 +1,8 @@
 package core;
 
+import rm.RM;
+
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -33,6 +34,10 @@ public abstract class Process {
 
     protected int IC = 0;
 
+    protected static Kernel kernel = Kernel.getInstance();
+    protected static RM rm = RM.getInstance();
+
+
     public Process() {
         this.pD = IDs++;
         this.IC++;
@@ -45,6 +50,7 @@ public abstract class Process {
     }
 
     public void run() {
+        System.out.println("Running process: " + this.pID);
         execute();
     }
 
@@ -54,32 +60,44 @@ public abstract class Process {
         Collections.addAll(this.createdResources, resources);
     }
 
-    public void removeCreatedResources(Resource ... resources){
-        this.createdResources.removeAll(Arrays.asList(resources));
+    public void removeCreatedResource(Resource resource){
+        this.createdResources.remove(resource);
     }
 
-    public void addOwnedResources(Resource... resources) {
-        Collections.addAll(this.ownedResources, resources);
+    public void addOwnedResource(Resource resource) {
+        this.ownedResources.add(resource);
     }
 
-    public void releaseOwnedResources(Resource... resources) {
-        this.ownedResources.removeAll(Arrays.asList(resources));
-    }
 
     public void destroyChildren(){
-        //kreiptis i kernel
+        for(Process child : this.children){
+            kernel.destroyProcess(child);
+        }
     }
 
-    public void destroyResourses() {
-        //kreiptis i kernel
+    public void destroyResources() {
+        for(Resource resource : this.ownedResources){
+            kernel.deleteResource(this, resource);
+        }
     }
 
-    public void releaseAllResources() {
-        //kreiptis i kernel
+    public void releaseResource(Resource resource){
+        this.ownedResources.remove(resource);
     }
 
-    public void addChildren(Process... children) {
-        Collections.addAll(this.children, children);
+
+    public void releaseResources() {
+        for(Resource resource : this.ownedResources){
+            kernel.freeResource(this, resource);
+        }
+    }
+
+    public void addChild(Process child) {
+        this.children.add(child);
+    }
+
+    public void removeChild(Process p){
+        this.children.remove(p);
     }
 
     public List<Process> getChildren(){
@@ -117,6 +135,10 @@ public abstract class Process {
 
     public void setState(ProcState state) {
         this.state = state;
+    }
+
+    public ProcState getState() {
+        return state;
     }
 
     @Override

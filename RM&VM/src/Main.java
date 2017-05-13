@@ -1,3 +1,4 @@
+import core.Kernel;
 import rm.FlashMemory;
 import rm.HDD;
 import rm.RM;
@@ -10,7 +11,14 @@ import java.util.Scanner;
 public class Main {
 
     public static void main(String[] args) throws IOException {
+        RM rm = RM.getInstance();
+        Kernel kernel = Kernel.getInstance();
 
+        rm.loadOS();
+        rm.run();
+    }
+
+    public static void oldStartup() throws IOException {
         RM rm = new RM();
         VM vm = new VM();
 
@@ -37,7 +45,8 @@ public class Main {
             System.in.read();
             RM.moveMemory(0, 0);
 
-        } else if (choosen == 1) {
+        }
+        else if (choosen == 1) {
 
             RM.setMODE((byte) 1);
             try {
@@ -51,7 +60,8 @@ public class Main {
             RM.sMemory.display();
             RM.moveMemory(0, 0);
             RM.memory.display();
-        } else {
+        }
+        else {
             System.out.println("EXIT. BAD NUMBER");
             System.exit(-1);
         }
