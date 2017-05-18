@@ -84,7 +84,6 @@ public class RM {
             System.exit(-1);
         }
         vm.processCommands(); */
-       this.kernel.start();
        this.kernel.run();
     }
 

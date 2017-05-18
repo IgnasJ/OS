@@ -157,4 +157,9 @@ public abstract class Process {
         //Nebus dvieju procesu su vienodais id cj?
         return this.pD;
     }
+
+    @Override
+    public String toString() {
+        return this.pID;
+    }
 }

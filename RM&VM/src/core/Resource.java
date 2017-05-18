@@ -25,12 +25,54 @@ public abstract class Resource {
     protected List<Resource> allResources;
     //Nuoroda į šio resurso laukiančių procesų resurso elemento rodyklių sąrašą (???????????????????)
 
-    //Resurso pozymis
-    protected String rTxt;
+    private ResState status = ResState.BLOCKED;
 
+    private boolean reusable;
+    private boolean wasUsed;
+
+    protected Process sender, receiver;
+
+    protected static Kernel kernel;
 
     public Resource() {
         this.rID = IDs++;
+        this.kernel = Kernel.getInstance();
+    }
+
+    public void distribute(){
+        for(int i = 0; i < this.resourceElements.size(); ++i){
+            if(this.waitingProcesses.size() > 0){
+                Process waitingProc = this.waitingProcesses.get(0);
+                Resource element = this.resourceElements.get(0);
+                kernel.giveResource(waitingProc, element.rIDI);
+            }
+            else{
+                break;
+            }
+        }
+    }
+
+    public void removeElement(Resource element){
+        boolean removed = this.resourceElements.remove(element);
+        if(!removed){
+            System.out.println("Failed to remove resource element: " + element);
+        }
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Resource)) return false;
+
+        Resource resource = (Resource) o;
+
+        return rID == resource.rID;
+    }
+
+    @Override
+    public int hashCode() {
+        return rID;
     }
 
     /*
@@ -52,13 +94,13 @@ public abstract class Resource {
     }
 
     /*
-    Naikinti resursą
-        Resurso deskriptorius išmetamas iš jo tėvo sukurtų resursų sąrašo, naikinamas jo elementų
-        sąrašas, atblokuojami procesai, laukiantys šio resurso, išmetamas iš bendro resursų sąrašo, ir,
-        galiausiai naikinamas pats deskriptorius.
-     */
+        Naikinti resursą
+            Resurso deskriptorius išmetamas iš jo tėvo sukurtų resursų sąrašo, naikinamas jo elementų
+            sąrašas, atblokuojami procesai, laukiantys šio resurso, išmetamas iš bendro resursų sąrašo, ir,
+            galiausiai naikinamas pats deskriptorius.
+         */
     public void destroyResource(){
-        this.creator.removeCreatedResources(this);
+        this.creator.removeCreatedResource(this);
         //naikinamas elementu sarasas
         //atblokuojami procesai, laukiantis sio resurso
         this.allResources.remove(this);
@@ -118,11 +160,7 @@ public abstract class Resource {
         return allResources;
     }
 
-    public String getrTxt() {
-        return rTxt;
-    }
-
-    public void setrTxt(String rTxt) {
-        this.rTxt = rTxt;
+    public String toString(){
+        return rIDI;
     }
 }
