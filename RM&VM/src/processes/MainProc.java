@@ -9,6 +9,8 @@ import resources.ProgramInSupervMemoryResource;
  */
 public class MainProc extends Process {
 
+    protected int priority = 98;
+
     public MainProc(){
         this.pID = "MainProc";
         this.priority = 98;

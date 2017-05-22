@@ -17,6 +17,8 @@ public class JobGovernor extends Process{
     virtualios mašinos proceso tėvas, valdantis virtualios mašinos proceso darbą;
      */
 
+    protected int priority = 97;
+
     public JobGovernor(){
         this.pID = "Job Governor";
         this.priority = 97;
