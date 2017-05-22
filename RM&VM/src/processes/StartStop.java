@@ -11,6 +11,8 @@ public class StartStop extends Process {
     šakninis procesas, sukuriantis bei naikinantis sisteminius procesus ir resursus;
      */
 
+    protected int priority = 100;
+
     public StartStop() {
         this.pID = "StartStop";
     }

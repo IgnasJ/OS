@@ -127,6 +127,23 @@ Mūsų modelyje bus naudojami šie procesai:
 	\end{itemize}
 Visi procesai, išskyrus VirtualMachine (šį procesą sukuria JobGovernor) ir JobGovernor, yra sukuriami sistemos darbo pradžioje proceso StartStop.
 
+\subsubsection{Procesų prioritetai}
+
+\begin{center}
+    \begin{tabular}{ | l | l | l | l | }
+    \hline
+    1. & StartStop & Prioritetas & 100 \\ \hline
+    2. & Interupt & Prioritetas & 99 \\ \hline
+    3. & MainProc & Prioritetas & 98 \\ \hline
+    4. & JobGovernor & Prioritetas & 97 \\ \hline
+    5. &  Memory Governor & Prioritetas & 96 \\ \hline
+    6. & ReadFromKey & Prioritetas & 95 \\ \hline
+    7. & GetLine & Prioritetas & 94 \\ \hline
+    8. & PrintLine & Prioritetas & 93 \\ \hline
+    9. & VirtualMachine & Prioritetas & 50 \\ \hline
+    \end{tabular}
+\end{center}
+
 \subsection{Procesų aprašai}
 
 \subsubsection{Procesas StartStop}

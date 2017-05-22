@@ -11,6 +11,8 @@ import rm.RM;
  */
 public class Interrupt extends Process {
 
+    protected int priority = 99;
+
     public Interrupt() {
         this.pID = "Interrupt";
     }

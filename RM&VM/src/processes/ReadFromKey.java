@@ -9,6 +9,8 @@ import rm.RM;
  */
 public class ReadFromKey extends Process{
 
+    protected int priority = 95;
+
     public ReadFromKey(){
         this.pID = "ReadFromKey";
     }

@@ -7,6 +7,8 @@ import core.Process;
  */
 public class PrintLine extends Process{
 
+    protected int priority = 93;
+
     public PrintLine(){
         this.pID = "PrintLine";
     }
