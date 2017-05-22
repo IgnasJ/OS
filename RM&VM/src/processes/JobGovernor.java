@@ -1,7 +1,11 @@
 package processes;
 
+import core.Logger;
 import core.Process;
 import resources.InterruptResource;
+import resources.TaskInExternalMemoryResource;
+import resources.WaitForInputResource;
+import resources.WaitForOutputResource;
 import rm.RM;
 
 /**
@@ -15,6 +19,7 @@ public class JobGovernor extends Process{
 
     public JobGovernor(){
         this.pID = "Job Governor";
+        this.priority = 97;
     }
 
     @Override
@@ -36,12 +41,40 @@ public class JobGovernor extends Process{
                 break;
             case 2:
                 InterruptResource interrupt = (InterruptResource)this.ownedResources.get(0);
-                if(interrupt.getType().equals("IOI")){
+                if(interrupt.getType().equals("SI")){
+                    //nuskaitymo pertraukimas
+                    if(interrupt.getValue() == 1){
+                        Logger.log("WaitForInputResource");
+                        kernel.freeResource(this, new WaitForInputResource());
+
+                    }
+                    //isvedimo pertraukimas
+                    else if(interrupt.getValue() == 2){
+                        Logger.log("WaitForOutputResource");
+                        kernel.freeResource(this, new WaitForOutputResource());
+                    }
+                    //HALT?
+                    else if(interrupt.getValue() == 3){
+
+                    }
+                }
+                else if(interrupt.getType().equals("TI")){
+                    Logger.log("InterruptResource");
+                    kernel.requestResource(this, "InterruptResource");
+                    resetIC();
+                }
+                else if(interrupt.getType().equals("PI")){
+                    Logger.log("PI thrown. Killing VM...");
+                    this.destroyChildren();
+                    kernel.freeResource(this, new TaskInExternalMemoryResource());
 
                 }
+                kernel.freeResource(this, interrupt);
                 break;
             case 3:
-
+                kernel.activateProcess(this.children.get(0));
+                //Semaforai or someshit
+                break;
         }
     }
 }

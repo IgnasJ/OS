@@ -11,6 +11,7 @@ public class MainProc extends Process {
 
     public MainProc(){
         this.pID = "MainProc";
+        this.priority = 98;
     }
 
     @Override

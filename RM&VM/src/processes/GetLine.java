@@ -7,8 +7,10 @@ import core.Process;
  */
 public class GetLine extends Process{
 
+
     public GetLine(){
         this.pID = "GetLine";
+        this.priority = 94;
     }
 
     @Override

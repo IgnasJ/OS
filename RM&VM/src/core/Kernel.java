@@ -14,8 +14,8 @@ public class Kernel {
     private List<Resource> resources = new ArrayList<>();
     private List<Process> allProcesses = new ArrayList<>();
 
-    private PriorityQueue<Process> readyProcesses = new PriorityQueue<>();
-    private PriorityQueue<Process> blockedProcesses = new PriorityQueue<>();
+    public PriorityQueue<Process> readyProcesses = new PriorityQueue<>();
+    public PriorityQueue<Process> blockedProcesses = new PriorityQueue<>();
 
     private Process currentProcess;
 
@@ -127,7 +127,7 @@ public class Kernel {
         Resource r = this.getResource(resource.getrIDI());
         if(r != null){
             process.releaseResource(resource);
-            //???
+            //??
             planner();
         }
         Logger.log("Finished freeing resource: " + resource);
@@ -141,8 +141,8 @@ public class Kernel {
         Logger.log("Process: " + askingProc + " requested " + amount + " of resource: " + resExtName);
         Resource r = this.getResource(resExtName);
         askingProc.setState(ProcState.BLOCKED);
-        //askingProc.setwaitingforresource
-        //r.addwaitingproc
+        askingProc.setWaitingForResource(r);
+        r.waitingProcCounts.put(askingProc, amount);
         //r.distribute
         planner();
     }

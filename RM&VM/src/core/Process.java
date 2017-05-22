@@ -32,6 +32,8 @@ public abstract class Process implements Comparable{
     //Procesu sarasas, kuriam priklauso procesas
     protected List<Process> processList;
 
+    protected Resource waitingForResource;
+
     protected int IC = 0;
 
     protected static Kernel kernel = Kernel.getInstance();
@@ -90,6 +92,14 @@ public abstract class Process implements Comparable{
         for(Resource resource : this.ownedResources){
             kernel.freeResource(this, resource);
         }
+    }
+
+    public Resource getWaitingForResource(){
+        return this.waitingForResource;
+    }
+
+    public void setWaitingForResource(Resource r){
+        this.waitingForResource = r;
     }
 
     public void addChild(Process child) {

@@ -11,6 +11,7 @@ public class ReadFromKey extends Process{
 
     public ReadFromKey(){
         this.pID = "ReadFromKey";
+        this.priority = 95;
     }
 
     @Override

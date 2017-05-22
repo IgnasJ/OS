@@ -13,6 +13,7 @@ public class Interrupt extends Process {
 
     public Interrupt() {
         this.pID = "Interrupt";
+        this. priority = 99;
     }
 
     @Override

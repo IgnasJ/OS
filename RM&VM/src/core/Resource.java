@@ -20,7 +20,7 @@ public abstract class Resource {
     //Resurso laukianciu procesu sarasas
     protected List<Process> waitingProcesses = new ArrayList<>();
     //Nuoroda i sio resurso laukianciu procesu paprasytu resurso kiekiu sarasas (tipo kiek sio resurso nori??)
-    protected Map<Resource, Integer> waitingProcCounts = new HashMap<>();
+    protected Map<Process, Integer> waitingProcCounts = new HashMap<>();
     //Nuoroda i visu resursu sarasa
     protected List<Resource> allResources;
     //Nuoroda į šio resurso laukiančių procesų resurso elemento rodyklių sąrašą (???????????????????)
@@ -152,7 +152,7 @@ public abstract class Resource {
         return waitingProcesses;
     }
 
-    public Map<Resource, Integer> getWaitingProcCounts() {
+    public Map<Process, Integer> getWaitingProcCounts() {
         return waitingProcCounts;
     }
 
