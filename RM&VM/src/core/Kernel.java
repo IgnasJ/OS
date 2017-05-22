@@ -21,8 +21,10 @@ public class Kernel {
 
     private static Kernel kernel;
 
+    public static boolean shutdown = false;
+
     public void start(){
-        System.out.println("Starting kernel");
+        Logger.log("Starting kernel");
         Process startStop = new StartStop();
         this.createProcess(null, startStop);
         planner();
@@ -31,7 +33,7 @@ public class Kernel {
     public void run(){
         Process p = this.getCurrentProcess();
         if(p == null){
-            System.out.println("No processes are running");
+            Logger.log("No processes are running");
         }
         else{
             p.run();
@@ -39,7 +41,7 @@ public class Kernel {
     }
 
     public void createProcess(Process parent, Process createdProc){
-        System.out.println("Creating process: " + createdProc + " ...");
+        Logger.log("Creating process: " + createdProc + " ...");
         this.allProcesses.add(createdProc);
         this.readyProcesses.add(createdProc);
         createdProc.setState(ProcState.READY);
@@ -47,11 +49,11 @@ public class Kernel {
             parent.addChild(createdProc);
             createdProc.setParent(parent);
         }
-        System.out.println("Finished creating process: " + createdProc);
+        Logger.log("Finished creating process: " + createdProc);
     }
 
     public void destroyProcess(Process p){
-        System.out.println("Destroying process: " + p + " ...");
+        Logger.log("Destroying process: " + p + " ...");
         if(p.getParent() != null){
             p.getParent().removeChild(p);
         }
@@ -64,12 +66,12 @@ public class Kernel {
         readyProcesses.remove(p);
         blockedProcesses.remove(p);
 
-        System.out.println("Finished destroying process: " + p);
+        Logger.log("Finished destroying process: " + p);
 
     }
 
     public void activateProcess(Process p){
-        System.out.println("Activating process: " + p);
+        Logger.log("Activating process: " + p);
         switch(p.getState()){
             case BLOCKEDWAITING:
                 p.setState(ProcState.BLOCKED);
@@ -78,14 +80,14 @@ public class Kernel {
                 p.setState(ProcState.READY);
                 break;
             default:
-                System.out.println("Error activating process: " + p);
+                Logger.log("Error activating process: " + p);
                 break;
         }
         planner();
     }
 
     public void stopProcess(Process p){
-        System.out.println("Stopping process: " + p);
+        Logger.log("Stopping process: " + p);
         switch(p.getState()){
             case BLOCKED:
                 p.setState(ProcState.BLOCKEDWAITING);
@@ -94,41 +96,41 @@ public class Kernel {
                 p.setState(ProcState.READYSWAITING);
                 break;
             default:
-                System.out.println("Error stopping process: " + p);
+                Logger.log("Error stopping process: " + p);
                 break;
         }
         planner();
     }
 
     public void runProcess(Process p){
-        System.out.println("Running process: " + p.pID);
+        Logger.log("Running process: " + p.pID);
         p.setState(ProcState.RUNNING);
         this.readyProcesses.remove(p);
         this.currentProcess = p;
     }
 
     public void createResource(Process owner, Resource resource){
-        System.out.println("Creating resource: " + resource);
+        Logger.log("Creating resource: " + resource);
         resource.setCreator(owner);
         owner.addCreatedResources(resource);
         this.resources.add(resource);
     }
 
     public void deleteResource(Process process, Resource resource){
-        System.out.println("Deleting resource: " + resource + " from process: " + process + " ...");
+        Logger.log("Deleting resource: " + resource + " from process: " + process + " ...");
         this.resources.remove(resource);
         process.removeCreatedResource(resource);
     }
 
     public void freeResource(Process process, Resource resource){
-        System.out.println("Freeing resource: " + resource + " ...");
+        Logger.log("Freeing resource: " + resource + " ...");
         Resource r = this.getResource(resource.getrIDI());
         if(r != null){
             process.releaseResource(resource);
             //???
             planner();
         }
-        System.out.println("Finished freeing resource: " + resource);
+        Logger.log("Finished freeing resource: " + resource);
     }
 
     public void requestResource(Process askingProc, String resExtName){
@@ -136,7 +138,7 @@ public class Kernel {
     }
 
     public void requestResources(Process askingProc, String resExtName, int amount){
-        System.out.println("Process: " + askingProc + " requested " + amount + " of resource: " + resExtName);
+        Logger.log("Process: " + askingProc + " requested " + amount + " of resource: " + resExtName);
         Resource r = this.getResource(resExtName);
         askingProc.setState(ProcState.BLOCKED);
         //askingProc.setwaitingforresource
@@ -164,10 +166,10 @@ public class Kernel {
         }
         if(current == null){
             if(firstReady == null){
-                System.out.println("All processes are blocked");
+                Logger.log("All processes are blocked");
             }
             else{
-                System.out.println("Planner changing process");
+                Logger.log("Planner changing process");
                 firstReady = this.readyProcesses.poll();
                 firstReady.setState(ProcState.RUNNING);
                 this.runProcess(firstReady);
@@ -175,10 +177,10 @@ public class Kernel {
         }
         else{
             if(firstReady == null){
-                System.out.println("No other ready processes, starting current one");
+                Logger.log("No other ready processes, starting current one");
             }
             else if(firstReady.priority > current.priority){
-                System.out.println("Current process has lower priority");
+                Logger.log("Current process has lower priority");
                 firstReady = this.readyProcesses.poll();
                 firstReady.setState(ProcState.RUNNING);
                 this.runProcess(firstReady);
@@ -195,6 +197,9 @@ public class Kernel {
         return kernel;
     }
 
+    public void shutDown(){
+        shutdown = true;
+    }
 
 
     public List<Resource> getResources(){

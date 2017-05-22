@@ -3,6 +3,7 @@ package rm;
 import core.Kernel;
 import vm.VM;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 public class RM {
@@ -31,8 +32,23 @@ public class RM {
 
     //realioj masinoj susimapinti
 
-    public static Memory memory = new Memory();
-    public static SupervisorMemory sMemory = new SupervisorMemory();
+    public static Memory memory;
+    public static SupervisorMemory sMemory;
+    public static HDD hdd;
+    public static Printer printer;
+    public static FlashMemory flashMemory;
+
+    static{
+        try {
+            memory = new Memory();
+            sMemory = new SupervisorMemory();
+            hdd = new HDD();
+            printer = new Printer();
+        }
+        catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
 
     public RM() {
         System.out.println("RM init.");
@@ -59,7 +75,6 @@ public class RM {
         }
 
         RM.readFromUSB("test.txt");
-        System.out.println(FlashMemory.sector);
         RM.PD(0, 0);
         RM.moveMemory(0, 0); */
     }

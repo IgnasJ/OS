@@ -1,5 +1,7 @@
 package rm;
 
+import core.Logger;
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
@@ -24,7 +26,7 @@ public class HDD {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        System.out.println("HDD init.");
+        Logger.log("HDD init.");
     }
 
     public static void write(char[] data, int sector) {

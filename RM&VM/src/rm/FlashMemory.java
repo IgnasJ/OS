@@ -1,5 +1,7 @@
 package rm;
 
+import core.Logger;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -33,6 +35,6 @@ public class FlashMemory {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        System.out.println("Read from FLASH to HDD.");
+        Logger.log("Read from FLASH to HDD.");
     }
 }

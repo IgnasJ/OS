@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * @author Lukas
  */
-public abstract class Process {
+public abstract class Process implements Comparable{
 
     protected static int IDs = 0;
 
@@ -40,7 +40,6 @@ public abstract class Process {
 
     public Process() {
         this.pD = IDs++;
-        this.IC++;
         state = ProcState.READY;
     }
 
@@ -50,8 +49,9 @@ public abstract class Process {
     }
 
     public void run() {
-        System.out.println("Running process: " + this.pID);
+        Logger.log("Running process: " + this.pID);
         execute();
+        this.IC++;
     }
 
     public abstract void execute();
@@ -70,14 +70,14 @@ public abstract class Process {
 
 
     public void destroyChildren(){
-        for(Process child : this.children){
-            kernel.destroyProcess(child);
+        for(int i = 0; i < children.size(); ++i){
+            kernel.destroyProcess(children.get(i));
         }
     }
 
     public void destroyResources() {
-        for(Resource resource : this.ownedResources){
-            kernel.deleteResource(this, resource);
+        for(int i = 0; i < ownedResources.size(); ++i){
+            kernel.deleteResource(this, ownedResources.get(i));
         }
     }
 
@@ -133,6 +133,14 @@ public abstract class Process {
         return IC;
     }
 
+    public void setIC(int IC) {
+        this.IC = IC;
+    }
+
+    public void resetIC(){
+        this.IC = -1;
+    }
+
     public void setState(ProcState state) {
         this.state = state;
     }
@@ -161,5 +169,10 @@ public abstract class Process {
     @Override
     public String toString() {
         return this.pID;
+    }
+
+    @Override
+    public int compareTo(Object o) {
+        return ((Integer)(((Process) o).priority)).compareTo(((Integer)this.priority));
     }
 }

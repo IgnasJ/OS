@@ -1,4 +1,3 @@
-import core.Kernel;
 import rm.FlashMemory;
 import rm.HDD;
 import rm.RM;
@@ -12,8 +11,6 @@ public class Main {
 
     public static void main(String[] args) throws IOException {
         RM rm = RM.getInstance();
-        Kernel kernel = Kernel.getInstance();
-
         rm.loadOS();
         rm.run();
     }
