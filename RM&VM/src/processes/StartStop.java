@@ -41,7 +41,7 @@ public class StartStop extends Process {
                 kernel.createResource(this, new TaskInExternalMemoryResource());
                 kernel.createResource(this, new WaitForInputResource());
                 kernel.createResource(this, new WaitForOutputResource());
-                
+
                 //prideti semaforus
 
                 //laukti sistemos pabaigos resurso. Prideti kai visos programos ivykdytos
